@@ -1,0 +1,26 @@
+Sistem Informasi untuk warung Kopi "Niti Noto"
+
+Role:
+1. Owner
+2. Cashier
+3. Staff
+4. customer (guest/login)
+
+MVP:
+1. Login
+2. POS
+3. Menu manajemen
+4. Table manajemen
+5. self order
+6. Mobile Friendly
+7. dashboard (Onwer dan cashier)
+8. Expense Manajemen
+9. Staff manajemen
+10. Laporan financial lengkap untuk owner
+
+Flow wajib:
+1. ditable manajemen bisa generate barcode untuk self order dan bisa di printout barcode nya
+2. customer bisa self order dari barcode (tampilan ini harus mobile friendly ya)
+3. untuk payment kita manual aja tanpa payment gateway
+4. item menu yg tampil di pos tanpa ada stok tp bisa di nonaktifkan.
+5. ketika customer udah konfirm orderannya atau order langsung dari cashier, ada tracking status pembuatan ordernya, jadi konsep nya adalah self pickup gitu.
