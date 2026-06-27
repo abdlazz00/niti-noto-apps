@@ -2,7 +2,7 @@
 
 **Goal:** Bangun sistem informasi warung kopi Niti Noto secara bertahap, per sprint kecil yang masing-masing menghasilkan deliverable yang bisa ditest.
 
-**Stack:** Laravel 12 + Inertia.js + Vue 3 + PrimeVue + PostgreSQL + Reverb + Spatie Permission + Motion.js
+**Stack:** Laravel 12 + Inertia.js + Vue 3 + PrimeVue + PostgreSQL + Reverb + Spatie Permission + Motion.js + Laravel Breeze (auth scaffolding)
 
 **Referensi:** `docs/superpowers/specs/2026-06-27-niti-noto-design.md`
 
@@ -13,26 +13,26 @@
 **Goal:** Laravel project berjalan dengan Inertia + Vue + PrimeVue + Reverb + Spatie terpasang.
 
 ### Task 0.1 — Init Laravel Project
-- [ ] `composer create-project laravel/laravel niti-noto "^12.0"`
-- [ ] Konfigurasi `.env` → DB_CONNECTION=pgsql, set DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD
-- [ ] `php artisan migrate` (default migrations)
-- [ ] Commit: `chore: init laravel 12 project`
+- [x] `composer create-project laravel/laravel niti-noto "^12.0"`
+- [x] Konfigurasi `.env` → DB_CONNECTION=pgsql, set DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD
+- [x] `php artisan migrate` (default migrations)
+- [x] Commit: `chore: init laravel 12 project`
 
 ### Task 0.2 — Install Inertia.js (Server Side)
-- [ ] `composer require inertiajs/inertia-laravel`
-- [ ] Publish middleware: `php artisan inertia:middleware`
-- [ ] Tambah `HandleInertiaRequests` ke `bootstrap/app.php` middleware web group
-- [ ] Commit: `chore: install inertia server-side`
+- [x] `composer require inertiajs/inertia-laravel`
+- [x] Publish middleware: `php artisan inertia:middleware`
+- [x] Tambah `HandleInertiaRequests` ke `bootstrap/app.php` middleware web group
+- [x] Commit: `chore: install inertia server-side`
 
 ### Task 0.3 — Install Frontend Dependencies
-- [ ] `npm install @inertiajs/vue3 vue@^3`
-- [ ] `npm install primevue @primevue/themes primeicons`
-- [ ] `npm install motion`
-- [ ] `npm install laravel-echo pusher-js`
-- [ ] Commit: `chore: install frontend dependencies`
+- [x] `npm install @inertiajs/vue3 vue@^3`
+- [x] `npm install primevue @primevue/themes primeicons`
+- [x] `npm install motion`
+- [x] `npm install laravel-echo pusher-js`
+- [x] Commit: `chore: install frontend dependencies`
 
 ### Task 0.4 — Konfigurasi Vite + Vue + Inertia
-- [ ] Update `vite.config.js`:
+- [x] Update `vite.config.js`:
 ```js
 import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
@@ -70,20 +70,20 @@ createInertiaApp({
     },
 })
 ```
-- [ ] `npm run dev` — pastikan tidak ada error
-- [ ] Commit: `chore: configure vite, vue, inertia, primevue`
+- [x] `npm run dev` — pastikan tidak ada error
+- [x] Commit: `chore: configure vite, vue, inertia, primevue`
 
 ### Task 0.5 — Install Spatie Laravel Permission
-- [ ] `composer require spatie/laravel-permission`
-- [ ] `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"`
-- [ ] Tambah `HasRoles` trait ke `User` model
-- [ ] Commit: `chore: install spatie laravel permission`
+- [x] `composer require spatie/laravel-permission`
+- [x] `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"`
+- [x] Tambah `HasRoles` trait ke `User` model
+- [x] Commit: `chore: install spatie laravel permission`
 
 ### Task 0.6 — Install Laravel Reverb
-- [ ] `composer require laravel/reverb`
-- [ ] `php artisan reverb:install`
-- [ ] Konfigurasi `.env` Reverb keys (REVERB_APP_ID, REVERB_APP_KEY, REVERB_APP_SECRET)
-- [ ] Update `resources/js/bootstrap.js` — setup Echo dengan Reverb:
+- [x] `composer require laravel/reverb`
+- [x] `php artisan reverb:install`
+- [x] Konfigurasi `.env` Reverb keys (REVERB_APP_ID, REVERB_APP_KEY, REVERB_APP_SECRET)
+- [x] Update `resources/js/bootstrap.js` — setup Echo dengan Reverb:
 ```js
 import Echo from 'laravel-echo'
 import Pusher from 'pusher-js'
@@ -99,17 +99,17 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 })
 ```
-- [ ] Import `bootstrap.js` di `app.js`
-- [ ] Commit: `chore: install and configure laravel reverb`
+- [x] Import `bootstrap.js` di `app.js`
+- [x] Commit: `chore: install and configure laravel reverb`
 
 ### Task 0.7 — Buat 3 Layout Vue
-- [ ] Buat `resources/js/Layouts/AppLayout.vue` — sidebar + header untuk internal user
-- [ ] Buat `resources/js/Layouts/CustomerLayout.vue` — mobile-first, minimal navbar
-- [ ] Buat `resources/js/Layouts/DisplayLayout.vue` — fullscreen, no auth, font besar
-- [ ] Buat `resources/js/Pages/Home.vue` (placeholder) untuk verify Inertia berjalan
-- [ ] Tambah route `Route::get('/', fn() => inertia('Home'))` di `routes/web.php`
-- [ ] `npm run dev` + buka browser — pastikan PrimeVue komponen render
-- [ ] Commit: `feat: add app, customer, display layouts`
+- [x] Buat `resources/js/Layouts/AppLayout.vue` — sidebar + header untuk internal user
+- [x] Buat `resources/js/Layouts/CustomerLayout.vue` — mobile-first, minimal navbar
+- [x] Buat `resources/js/Layouts/DisplayLayout.vue` — fullscreen, no auth, font besar
+- [x] Buat `resources/js/Pages/Home.vue` (placeholder) untuk verify Inertia berjalan
+- [x] Tambah route `Route::get('/', fn() => inertia('Home'))` di `routes/web.php`
+- [x] `npm run dev` + buka browser — pastikan PrimeVue komponen render
+- [x] Commit: `feat: add app, customer, display layouts`
 
 ---
 
@@ -118,8 +118,8 @@ window.Echo = new Echo({
 **Goal:** Semua tabel terbuat di PostgreSQL, semua Model dengan relasi siap.
 
 ### Task 1.1 — Migration: users & staff_profiles
-- [ ] Update migration `create_users_table` — tambah kolom `photo` (string nullable) dan `is_active` (boolean default true)
-- [ ] Buat migration: `php artisan make:migration create_staff_profiles_table`
+- [x] Update migration `create_users_table` — tambah kolom `photo` (string nullable) dan `is_active` (boolean default true)
+- [x] Buat migration: `php artisan make:migration create_staff_profiles_table`
 ```php
 Schema::create('staff_profiles', function (Blueprint $table) {
     $table->id();
@@ -132,12 +132,12 @@ Schema::create('staff_profiles', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- [ ] `php artisan migrate`
-- [ ] Commit: `feat: migration users and staff_profiles`
+- [x] `php artisan migrate`
+- [x] Commit: `feat: migration users and staff_profiles`
 
 ### Task 1.2 — Migration: categories & menu_items
-- [ ] `php artisan make:migration create_categories_table`
-- [ ] `php artisan make:migration create_menu_items_table`
+- [x] `php artisan make:migration create_categories_table`
+- [x] `php artisan make:migration create_menu_items_table`
 ```php
 // categories
 Schema::create('categories', function (Blueprint $table) {
@@ -157,11 +157,11 @@ Schema::create('menu_items', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- [ ] `php artisan migrate`
-- [ ] Commit: `feat: migration categories and menu_items`
+- [x] `php artisan migrate`
+- [x] Commit: `feat: migration categories and menu_items`
 
 ### Task 1.3 — Migration: tables
-- [ ] `php artisan make:migration create_tables_table`
+- [x] `php artisan make:migration create_tables_table`
 ```php
 Schema::create('tables', function (Blueprint $table) {
     $table->id();
@@ -172,13 +172,13 @@ Schema::create('tables', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- [ ] `php artisan migrate`
-- [ ] Commit: `feat: migration tables`
+- [x] `php artisan migrate`
+- [x] Commit: `feat: migration tables`
 
 ### Task 1.4 — Migration: shifts & orders & order_items
-- [ ] `php artisan make:migration create_shifts_table`
-- [ ] `php artisan make:migration create_orders_table`
-- [ ] `php artisan make:migration create_order_items_table`
+- [x] `php artisan make:migration create_shifts_table`
+- [x] `php artisan make:migration create_orders_table`
+- [x] `php artisan make:migration create_order_items_table`
 ```php
 // shifts
 Schema::create('shifts', function (Blueprint $table) {
@@ -214,11 +214,11 @@ Schema::create('order_items', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- [ ] `php artisan migrate`
-- [ ] Commit: `feat: migration shifts, orders, order_items`
+- [x] `php artisan migrate`
+- [x] Commit: `feat: migration shifts, orders, order_items`
 
 ### Task 1.5 — Migration: order_status_logs
-- [ ] `php artisan make:migration create_order_status_logs_table`
+- [x] `php artisan make:migration create_order_status_logs_table`
 ```php
 Schema::create('order_status_logs', function (Blueprint $table) {
     $table->id();
@@ -228,12 +228,12 @@ Schema::create('order_status_logs', function (Blueprint $table) {
     $table->timestamp('changed_at');
 });
 ```
-- [ ] `php artisan migrate`
-- [ ] Commit: `feat: migration order_status_logs`
+- [x] `php artisan migrate`
+- [x] Commit: `feat: migration order_status_logs`
 
 ### Task 1.6 — Migration: expense_categories & expenses
-- [ ] `php artisan make:migration create_expense_categories_table`
-- [ ] `php artisan make:migration create_expenses_table`
+- [x] `php artisan make:migration create_expense_categories_table`
+- [x] `php artisan make:migration create_expenses_table`
 ```php
 // expense_categories
 Schema::create('expense_categories', function (Blueprint $table) {
@@ -257,33 +257,33 @@ Schema::create('expenses', function (Blueprint $table) {
     $table->timestamps();
 });
 ```
-- [ ] `php artisan migrate`
-- [ ] Commit: `feat: migration expense_categories and expenses`
+- [x] `php artisan migrate`
+- [x] Commit: `feat: migration expense_categories and expenses`
 
 ### Task 1.7 — Models & Relationships
-- [ ] Update `User` model — tambah `HasRoles` (Spatie), fillable, relasi `staffProfile()`, `orders()`, `shifts()`
-- [ ] Buat `StaffProfile` model — fillable, relasi `user()`
-- [ ] Buat `Category` model — fillable, relasi `menuItems()`
-- [ ] Buat `MenuItem` model — fillable, `scopeActive()`, relasi `category()`
-- [ ] Buat `Table` model — fillable, `scopeActive()`, relasi `orders()`
-- [ ] Buat `Shift` model — fillable, relasi `cashier()`, `orders()`
-- [ ] Buat `Order` model — fillable, casts `status` ke enum, relasi `table()`, `user()`, `shift()`, `items()`, `statusLogs()`
-- [ ] Buat `OrderItem` model — fillable, relasi `order()`, `menuItem()`
-- [ ] Buat `OrderStatusLog` model — fillable, relasi `order()`, `changedBy()`
-- [ ] Buat `ExpenseCategory` model — fillable, relasi `expenses()`
-- [ ] Buat `Expense` model — fillable, relasi `category()`, `createdBy()`, `approvedBy()`
-- [ ] Commit: `feat: all models with relationships`
+- [x] Update `User` model — tambah `HasRoles` (Spatie), fillable, relasi `staffProfile()`, `orders()`, `shifts()`
+- [x] Buat `StaffProfile` model — fillable, relasi `user()`
+- [x] Buat `Category` model — fillable, relasi `menuItems()`
+- [x] Buat `MenuItem` model — fillable, `scopeActive()`, relasi `category()`
+- [x] Buat `Table` model — fillable, `scopeActive()`, relasi `orders()`
+- [x] Buat `Shift` model — fillable, relasi `cashier()`, `orders()`
+- [x] Buat `Order` model — fillable, casts `status` ke enum, relasi `table()`, `user()`, `shift()`, `items()`, `statusLogs()`
+- [x] Buat `OrderItem` model — fillable, relasi `order()`, `menuItem()`
+- [x] Buat `OrderStatusLog` model — fillable, relasi `order()`, `changedBy()`
+- [x] Buat `ExpenseCategory` model — fillable, relasi `expenses()`
+- [x] Buat `Expense` model — fillable, relasi `category()`, `createdBy()`, `approvedBy()`
+- [x] Commit: `feat: all models with relationships`
 
 ### Task 1.8 — Seeders
-- [ ] `RoleSeeder` — buat roles: `owner`, `cashier`, `staff`, `customer`
-- [ ] `UserSeeder` — buat user owner default (email: `owner@nitnoto.com`, pass: `password`) + assign role owner
-- [ ] `CategorySeeder` — 3-4 kategori sample (Kopi, Non-Kopi, Makanan, Snack)
-- [ ] `MenuItemSeeder` — 5-8 item sample per kategori
-- [ ] `TableSeeder` — 5 meja sample dengan qr_code UUID
-- [ ] `ExpenseCategorySeeder` — bahan baku, operasional, gaji, lain-lain
-- [ ] Update `DatabaseSeeder` — jalankan semua seeder
-- [ ] `php artisan db:seed`
-- [ ] Commit: `feat: database seeders with sample data`
+- [x] `RoleSeeder` — buat roles: `owner`, `cashier`, `staff`, `customer`
+- [x] `UserSeeder` — buat user owner default (email: `owner@nitnoto.com`, pass: `password`) + assign role owner
+- [x] `CategorySeeder` — 3-4 kategori sample (Kopi, Non-Kopi, Makanan, Snack)
+- [x] `MenuItemSeeder` — 5-8 item sample per kategori
+- [x] `TableSeeder` — 5 meja sample dengan qr_code UUID
+- [x] `ExpenseCategorySeeder` — bahan baku, operasional, gaji, lain-lain
+- [x] Update `DatabaseSeeder` — jalankan semua seeder
+- [x] `php artisan db:seed`
+- [x] Commit: `feat: database seeders with sample data`
 
 ---
 
@@ -291,8 +291,18 @@ Schema::create('expenses', function (Blueprint $table) {
 
 **Goal:** Login berfungsi untuk semua role, redirect ke dashboard masing-masing. Customer bisa register/login atau guest.
 
+### Task 2.0 — Install Laravel Breeze
+- [x] `composer require laravel/breeze --dev`
+- [x] `php artisan breeze:install vue` (stack Vue + Inertia, tanpa flag --inertia di v2)
+- [x] `npm install` (Breeze menambah beberapa dev dependencies)
+- [x] `npm run build` untuk verify kompilasi
+- [x] `php artisan migrate`
+- [x] Replace halaman auth default Breeze (`Login.vue`, `Register.vue`) dengan versi PrimeVue
+- [x] Fix Tailwind v4: update `vite.config.js`, `app.css` (@import "tailwindcss"), clear `postcss.config.js`
+- [x] Commit: `chore: install laravel breeze with inertia vue stack`
+
 ### Task 2.1 — Route Groups & Middleware
-- [ ] Setup route groups di `routes/web.php`:
+- [x] Setup route groups di `routes/web.php`:
 ```php
 // Guest/Customer routes
 Route::get('/order/{qrCode}', [CustomerOrderController::class, 'index'])->name('order.menu');
@@ -322,81 +332,37 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
     Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
 });
 ```
-- [ ] Commit: `feat: route groups with role middleware`
+- [x] Commit: `feat: route groups with role middleware`
 
 ### Task 2.2 — AuthController
-- [ ] Buat `app/Http/Controllers/Auth/AuthController.php`:
-```php
-public function showLogin() { return inertia('Auth/Login'); }
-
-public function login(Request $request) {
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
-    if (!Auth::attempt($credentials, $request->boolean('remember'))) {
-        return back()->withErrors(['email' => 'Kredensial tidak sesuai.']);
-    }
-    $request->session()->regenerate();
-    $user = Auth::user();
-    return match(true) {
-        $user->hasRole('owner')   => redirect()->route('owner.dashboard'),
-        $user->hasRole('cashier') => redirect()->route('cashier.dashboard'),
-        $user->hasRole('staff')   => redirect()->route('staff.dashboard'),
-        default                   => redirect()->route('login'),
-    };
-}
-
-public function logout(Request $request) {
-    Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect()->route('login');
-}
-
-public function showRegister() { return inertia('Auth/Register'); }
-
-public function register(Request $request) {
-    $data = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|min:8|confirmed',
-    ]);
-    $user = User::create([...$data, 'password' => bcrypt($data['password'])]);
-    $user->assignRole('customer');
-    Auth::login($user);
-    return redirect()->route('login'); // redirect ke halaman order jika ada session
-}
-```
-- [ ] Commit: `feat: auth controller login logout register`
+- [x] Modifikasi `AuthenticatedSessionController::store()` — redirect ke dashboard sesuai role setelah login
+- [x] Modifikasi `RegisteredUserController::store()` — assign role `customer` saat register
+- [x] Update `HandleInertiaRequests` — share `auth.user` dengan roles + flash messages
+- [x] Commit: `feat: auth controller login logout register`
 
 ### Task 2.3 — Halaman Login (Vue)
-- [ ] Buat `resources/js/Pages/Auth/Login.vue`
+- [x] Buat `resources/js/Pages/Auth/Login.vue`
   - Form: email, password, remember me
   - PrimeVue: `InputText`, `Password`, `Button`, `Checkbox`
   - Tampilkan error validasi
   - Link ke `/register`
   - Logo Niti Noto di atas form
   - Centered card, bg putih, vibrant accent color
-- [ ] Test login dengan user owner seeder → redirect ke `/owner/dashboard`
-- [ ] Commit: `feat: login page with primevue`
+- [x] Commit: `feat: login page with primevue`
 
 ### Task 2.4 — Halaman Register Customer (Vue)
-- [ ] Buat `resources/js/Pages/Auth/Register.vue`
+- [x] Buat `resources/js/Pages/Auth/Register.vue`
   - Form: name, email, password, password_confirmation
   - Mobile-friendly (customer sering register dari HP)
   - Link balik ke login
-- [ ] Test register → user terbuat dengan role customer
-- [ ] Commit: `feat: customer register page`
+- [x] Commit: `feat: customer register page`
 
 ### Task 2.5 — Placeholder Dashboard per Role
-- [ ] Buat `resources/js/Pages/Owner/Dashboard.vue` (placeholder "Owner Dashboard")
-- [ ] Buat `resources/js/Pages/Cashier/Dashboard.vue` (placeholder "Cashier Dashboard")
-- [ ] Buat `resources/js/Pages/Staff/Dashboard.vue` (placeholder "Staff Dashboard")
-- [ ] Buat controller placeholder: `OwnerDashboardController`, `CashierDashboardController`, `StaffDashboardController`
-- [ ] Pasang `AppLayout` di setiap halaman
-- [ ] Test: login sebagai owner → `/owner/dashboard` muncul dengan sidebar
-- [ ] Commit: `feat: placeholder dashboards per role`
+- [x] Buat `resources/js/Pages/Owner/Dashboard.vue` (stat cards placeholder + chart placeholder)
+- [x] Buat `resources/js/Pages/Cashier/Dashboard.vue` (stat cards placeholder)
+- [x] Buat `resources/js/Pages/Staff/Dashboard.vue` (stat cards placeholder)
+- [x] Pasang `AppLayout` di setiap halaman via `defineOptions({ layout: AppLayout })`
+- [x] Commit: `feat: placeholder dashboards per role`
 
 ---
 

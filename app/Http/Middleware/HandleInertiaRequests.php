@@ -24,12 +24,12 @@ class HandleInertiaRequests extends Middleware
                     'name'  => $request->user()->name,
                     'email' => $request->user()->email,
                     'photo' => $request->user()->photo,
-                    'roles' => $request->user()->roles->map(fn($r) => ['name' => $r->name]),
+                    'roles' => $request->user()->roles->map(fn($r) => ['name' => $r->name])->values(),
                 ] : null,
             ],
             'flash' => [
-                'success' => fn() => $request->session()->get('success'),
-                'error'   => fn() => $request->session()->get('error'),
+                'success' => fn () => $request->session()->get('success'),
+                'error'   => fn () => $request->session()->get('error'),
             ],
         ];
     }

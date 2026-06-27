@@ -21,6 +21,7 @@ Sistem informasi manajemen warung kopi "Niti Noto" berbasis web dengan fitur POS
 | UI Style | Vibrant UI, light mode only, background white/slate-50 |
 | Animasi | Motion.js (dashboard & laporan) |
 | Realtime | Laravel Reverb (WebSocket) |
+| Auth Scaffolding | Laravel Breeze (Inertia + Vue stack) |
 | Role & Permission | Spatie Laravel Permission |
 | Storage | Laravel Storage (foto struk, foto menu, foto user) |
 
@@ -218,6 +219,8 @@ Setiap perubahan status tercatat di `order_status_logs`.
 ## 7. Module Breakdown
 
 ### Module 1 — Authentication
+- Menggunakan **Laravel Breeze** (stack Inertia + Vue) sebagai scaffolding auth
+- Halaman login, register, password reset di-generate Breeze lalu di-restyle dengan PrimeVue + Vibrant UI
 - Satu halaman login untuk semua role; redirect ke dashboard sesuai role setelah login
 - Customer: bisa guest (session anonim dengan UUID) atau register/login
 - Password reset via email
