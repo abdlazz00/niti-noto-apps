@@ -1,0 +1,2 @@
+#!/bin/zsh
+export PATH="/home/abdul-aziz/.config/FlyEnv/app/static-php-8.3.31:/home/abdul-aziz/.config/FlyEnv/app/static-php-8.3.31/bin:/home/abdul-aziz/.config/FlyEnv/app/static-php-8.3.31/sbin:$PATH" #FlyEnv-ID-Sqk0W2VklRLkrNTji3eh5KAIqsV7CTVd
