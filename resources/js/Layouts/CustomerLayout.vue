@@ -1,35 +1,33 @@
+<script setup>
+import { computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import Toast from 'primevue/toast';
+
+const page = usePage();
+const table = computed(() => page.props.table ?? null);
+</script>
+
 <template>
-    <div class="min-h-screen bg-white flex flex-col max-w-md mx-auto">
+    <div class="min-h-screen bg-slate-50 flex flex-col max-w-md mx-auto relative">
         <!-- Header -->
-        <header class="sticky top-0 z-20 bg-white border-b border-slate-100 px-4 py-3 flex items-center gap-3">
-            <div class="w-7 h-7 rounded-md bg-amber-500 flex items-center justify-center">
-                <span class="text-white font-bold text-xs">NN</span>
+        <header class="sticky top-0 z-20 bg-white border-b border-slate-100 px-4 py-3 flex items-center gap-3 shadow-sm">
+            <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
+                <span class="text-white font-black text-xs">NN</span>
             </div>
-            <div>
-                <p class="text-sm font-bold text-slate-800">Niti Noto</p>
-                <p v-if="subtitle" class="text-xs text-slate-500">{{ subtitle }}</p>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-slate-800 leading-tight">Niti Noto</p>
+                <p v-if="table" class="text-xs text-slate-500 truncate">
+                    Meja {{ table.number }} — {{ table.name }}
+                </p>
+                <p v-else class="text-xs text-amber-600 font-medium">Warung Kopi</p>
             </div>
         </header>
 
         <!-- Content -->
-        <main class="flex-1">
+        <main class="flex-1 pb-24">
             <slot />
         </main>
-
-        <!-- Bottom safe area -->
-        <div class="h-safe-bottom" />
 
         <Toast position="top-center" />
     </div>
 </template>
-
-<script setup>
-import Toast from 'primevue/toast';
-
-defineProps({
-    subtitle: {
-        type: String,
-        default: '',
-    },
-});
-</script>

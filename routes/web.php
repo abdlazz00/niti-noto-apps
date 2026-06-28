@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Owner\CategoryController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
@@ -12,6 +13,9 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Public customer routes (no auth required)
+Route::get('/order/{qrCode}', [CustomerOrderController::class, 'menu'])->name('order.menu');
 
 // Generic dashboard (customer fallback)
 Route::get('/dashboard', function () {

@@ -12,6 +12,11 @@ class MenuItemRepository
         return MenuItem::with('category')->orderBy('name')->get();
     }
 
+    public function getAllActive(): Collection
+    {
+        return MenuItem::active()->with('category')->orderBy('name')->get();
+    }
+
     public function create(array $data): MenuItem
     {
         return MenuItem::create($data);
