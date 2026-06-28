@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\Cashier\ExpenseController as CashierExpenseController;
 use App\Http\Controllers\Cashier\OrderController as CashierOrderController;
 use App\Http\Controllers\Cashier\PosController;
@@ -9,12 +10,14 @@ use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\TrackController;
 use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\Owner\CategoryController;
+use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\ExpenseCategoryController;
 use App\Http\Controllers\Owner\ExpenseController as OwnerExpenseController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
 use App\Http\Controllers\Owner\TableController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Staff\DashboardController as StaffDashboardController;
 use App\Http\Controllers\Staff\QueueController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,7 +42,7 @@ Route::get('/dashboard', function () {
 
 // Owner routes
 Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Owner/Dashboard'))->name('dashboard');
+    Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
     Route::resource('staff', StaffController::class);
     Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('staff.toggle-active');
 
@@ -69,7 +72,7 @@ Route::middleware(['auth', 'role:owner|cashier'])->prefix('owner')->name('owner.
 
 // Cashier routes
 Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->name('cashier.')->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Cashier/Dashboard'))->name('dashboard');
+    Route::get('/dashboard', [CashierDashboardController::class, 'index'])->name('dashboard');
 
     // Shift
     Route::post('/shift/start', [ShiftController::class, 'start'])->name('shift.start');
@@ -91,7 +94,7 @@ Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->name('cashier.')
 
 // Staff routes
 Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->group(function () {
-    Route::get('/dashboard', fn () => Inertia::render('Staff/Dashboard'))->name('dashboard');
+    Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
 
     // Kitchen queue
     Route::get('/queue', [QueueController::class, 'index'])->name('queue');
