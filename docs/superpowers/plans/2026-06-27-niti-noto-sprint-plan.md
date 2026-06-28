@@ -499,30 +499,28 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Customer scan QR → landing di halaman menu mobile-friendly → bisa pilih menu & keranjang.
 
 ### Task 6.1 — CustomerOrderController
-- [ ] Buat `app/Http/Controllers/Customer/OrderController.php`
-- [ ] Route: `Route::get('/order/{qrCode}', [CustomerOrderController::class, 'menu'])->name('order.menu')`
-- [ ] `menu($qrCode)`:
-  - Cari Table by qr_code, 404 jika tidak ada atau nonaktif
-  - Load menu aktif beserta kategori
-  - Return `inertia('Customer/Order/Menu', compact('table', 'categories', 'menuItems'))`
-- [ ] Commit: `feat: customer order controller menu`
+- [x] Buat `app/Http/Controllers/Customer/OrderController.php`
+- [x] Route: `Route::get('/order/{qrCode}', [CustomerOrderController::class, 'menu'])->name('order.menu')` (public)
+- [x] `menu($qrCode)`: cari Table by qr_code+is_active, load active items + categories, return Inertia
+- [x] Commit: `feat: customer order controller menu`
 
 ### Task 6.2 — Halaman Menu Customer (Vue)
-- [ ] Buat `resources/js/Pages/Customer/Order/Menu.vue` — gunakan `CustomerLayout`
-- [ ] Header: nama warung + nama meja
-- [ ] Tabs/filter kategori horizontal (scroll)
-- [ ] Grid menu items: foto, nama, harga, tombol tambah
-- [ ] Floating cart button di bawah (badge jumlah item)
-- [ ] State cart dikelola via `ref()` — tersimpan di memori/sessionStorage
-- [ ] Commit: `feat: customer menu page mobile-first`
+- [x] Buat `resources/js/Pages/Customer/Order/Menu.vue` — gunakan `CustomerLayout`
+- [x] CustomerLayout diupdate: auto-show table info (nomor + nama) dari Inertia page props
+- [x] Tabs/filter kategori horizontal (scroll), `Semua` default
+- [x] Grid 2-kolom menu items: foto, nama, harga, tombol tambah + inline qty control
+- [x] Floating cart button di bawah (badge qty + total), animasi Transition
+- [x] State cart dikelola via `useCart` composable (sessionStorage per-table)
+- [x] Commit: `feat: customer menu page mobile-first`
 
 ### Task 6.3 — Cart Component
-- [ ] Buat `resources/js/Components/Customer/Cart.vue`
-  - Slide-up panel atau modal
-  - List item di cart: nama, qty (+/-), harga, hapus
+- [x] Buat `resources/js/Components/Customer/Cart.vue`
+  - PrimeVue Drawer (slide-up bottom)
+  - List item di cart: thumbnail, nama, harga, qty control (+/-)
   - Total harga
-  - Tombol "Pesan Sekarang" → ke checkout
-- [ ] Commit: `feat: cart component`
+  - Tombol "Pesan Sekarang" → emit checkout → navigate ke checkout (Sprint 7)
+- [x] Buat `resources/js/composables/useCart.js` — cart state + sessionStorage persistence
+- [x] Commit: `feat: cart component`
 
 ---
 
