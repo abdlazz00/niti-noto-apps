@@ -670,47 +670,36 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Cashier/Staff input expense dengan foto, Owner approve/reject.
 
 ### Task 11.1 — ExpenseCategory Management (Owner)
-- [ ] Buat `app/Http/Controllers/Owner/ExpenseCategoryController.php`
-- [ ] CRUD sederhana (modal/inline edit di halaman expense)
-- [ ] Commit: `feat: expense category crud`
+- [x] `ExpenseCategoryRepository` — getAll, create, update, delete, hasExpenses
+- [x] `ExpenseCategoryController` — store/update/destroy (back with flash, guard hasExpenses on delete)
+- [x] Routes: owner.expense-categories.store/update/destroy
+- [x] `owner` PrivateChannel registered in routes/channels.php
 
 ### Task 11.2 — Expense Input Controller
-- [ ] Buat `app/Http/Controllers/Cashier/ExpenseController.php`
-- [ ] Routes cashier:
-```php
-Route::get('/expenses', [CashierExpenseController::class, 'index'])->name('cashier.expenses');
-Route::post('/expenses', [CashierExpenseController::class, 'store'])->name('cashier.expenses.store');
-```
-- [ ] `store()`:
-  - Validasi: title, amount, category_id, attachment (nullable, image, max 2MB)
-  - Upload foto ke `storage/app/public/expenses/`
-  - Buat Expense (status: pending, created_by: auth user)
-  - Broadcast `ExpenseSubmitted` ke channel `owner`
-- [ ] Commit: `feat: expense input controller`
+- [x] `ExpenseRepository` — getByUser, getFiltered (status/category_id/from/to), create, approve, reject
+- [x] `ExpenseSubmitted` event — PrivateChannel('owner'), payload: id, title, amount, category_name, submitted_by_name
+- [x] `ExpenseService` — getMyExpenses, getAllForOwner, store (upload attachment + broadcast), approve/reject (guard pending)
+- [x] `StoreExpenseRequest` — validate title, amount, category_id, attachment (image, max 2MB)
+- [x] `CashierExpenseController` — index (own expenses + categories), store
+- [x] Routes: cashier.expenses, cashier.expenses.store
 
 ### Task 11.3 — Expense Approval Controller (Owner)
-- [ ] Buat `app/Http/Controllers/Owner/ExpenseController.php`
-- [ ] Routes owner:
-```php
-Route::get('/expenses', [OwnerExpenseController::class, 'index'])->name('owner.expenses');
-Route::patch('/expenses/{expense}/approve', [OwnerExpenseController::class, 'approve'])->name('owner.expenses.approve');
-Route::patch('/expenses/{expense}/reject', [OwnerExpenseController::class, 'reject'])->name('owner.expenses.reject');
-```
-- [ ] `approve($expense)`: update status → approved, set approved_by, approved_at
-- [ ] `reject(Request $request, $expense)`: update status → rejected, simpan notes alasan
-- [ ] Commit: `feat: expense approval controller`
+- [x] `RejectExpenseRequest` — validate notes required
+- [x] `OwnerExpenseController` — index (filtered), approve, reject
+- [x] Routes: owner.expenses, owner.expenses.approve, owner.expenses.reject
 
 ### Task 11.4 — Halaman Expense (Vue)
-- [ ] Buat `resources/js/Pages/Cashier/Expense/Index.vue`
-  - Form input expense di atas (atau modal)
-  - List expense sendiri dengan status badge
-  - Preview foto attachment bisa di-klik
-- [ ] Buat `resources/js/Pages/Owner/Expense/Index.vue`
-  - Filter: status (pending/approved/rejected), kategori, tanggal
-  - List expense dengan foto, detail, tombol approve/reject
-  - Modal konfirmasi reject dengan input alasan
-  - Badge status berwarna (pending=orange, approved=green, rejected=red)
-- [ ] Commit: `feat: expense pages cashier and owner`
+- [x] `Cashier/Expense/Index.vue`:
+  - Form: title, amount (Rp prefix), category Select, file input + preview
+  - List: attachment thumbnail, title, category, date, status badge (pending/disetujui/ditolak)
+  - Alasan ditolak shown bila status rejected
+- [x] `Owner/Expense/Index.vue`:
+  - Status filter tabs + category Select (reactive, auto-applies on change)
+  - List: thumbnail dengan lightbox click, info submitter+tanggal, badge status
+  - Tombol Setujui + Tolak (pending only)
+  - Reject Dialog dengan Textarea alasan
+  - Category management Dialog: inline add/edit/delete
+- [x] Commit: `feat: sprint 11 - expense management with owner approval flow`
 
 ---
 
