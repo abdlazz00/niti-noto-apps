@@ -599,63 +599,46 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Cashier bisa input order manual, konfirmasi order masuk, terima pembayaran, dan kelola shift.
 
 ### Task 9.1 — Shift Management
-- [ ] Buat `app/Http/Controllers/Cashier/ShiftController.php`
-- [ ] Routes:
-```php
-Route::post('shift/start', [ShiftController::class, 'start'])->name('cashier.shift.start');
-Route::post('shift/end', [ShiftController::class, 'end'])->name('cashier.shift.end');
-Route::get('shift/current', [ShiftController::class, 'current'])->name('cashier.shift.current');
-```
-- [ ] `start()`: cek jika sudah ada shift aktif → error; buat Shift baru
-- [ ] `end()`: hitung total_revenue dari orders selesai di shift ini; set ended_at
-- [ ] Commit: `feat: shift management`
+- [x] `ShiftRepository` — findActiveForCashier, create, end
+- [x] `ShiftService` — start (guard active), end (sum revenue), getCurrent
+- [x] `ShiftController` — POST start/end, redirect back with flash
+- [x] Routes: cashier.shift.start, cashier.shift.end
+- [x] Commit: part of `feat: sprint 9`
 
 ### Task 9.2 — POS Order Input Controller
-- [ ] Buat `app/Http/Controllers/Cashier/PosController.php`
-- [ ] Route: `Route::get('/pos', [PosController::class, 'index'])->name('cashier.pos')`
-- [ ] Route: `Route::post('/pos/order', [PosController::class, 'store'])->name('cashier.pos.store')`
-- [ ] `index()`: load menu aktif + kategori + daftar meja aktif + shift aktif
-- [ ] `store()`: sama seperti `CustomerOrderController::store()` tapi user_id = cashier, shift_id diisi langsung
-- [ ] Commit: `feat: pos controller`
+- [x] `KitchenNewOrder` event — PrivateChannel('kitchen'), payload: order + items list
+- [x] `OrderRepository` extended — updateStatus, assignShift, getByStatuses
+- [x] `CashierOrderService` — placeOrder (with shift_id), confirmOrder (diterima + broadcast), completeOrder (selesai + broadcast)
+- [x] `StorePosOrderRequest` — validate table_id, items, notes
+- [x] `PosController` — index (menu+tables+shift), store (place order from POS)
+- [x] Routes: cashier.pos, cashier.pos.store
+- [x] Commit: part of `feat: sprint 9`
 
 ### Task 9.3 — Halaman POS (Vue)
-- [ ] Buat `resources/js/Pages/Cashier/Pos/Index.vue`
-  - Pilih meja (dropdown)
-  - Grid menu item: klik untuk tambah ke cart
-  - Panel kanan: cart dengan qty control, total, tombol order
-  - Responsive: 2 kolom di desktop
-- [ ] Commit: `feat: pos page`
+- [x] `Cashier/Pos/Index.vue`:
+  - Shift indicator bar: mulai/tutup shift via router.post
+  - Category filter tabs
+  - Menu item grid: klik tambah ke cart, badge qty di gambar
+  - Panel kanan: meja Select, cart list dengan +/- qty, notes Textarea, total, tombol submit
+- [x] Commit: part of `feat: sprint 9`
 
 ### Task 9.4 — Order Confirmation Controller
-- [ ] Buat `app/Http/Controllers/Cashier/OrderController.php`
-- [ ] Routes:
-```php
-Route::get('/orders', [CashierOrderController::class, 'index'])->name('cashier.orders');
-Route::patch('/orders/{order}/confirm', [CashierOrderController::class, 'confirm'])->name('cashier.orders.confirm');
-Route::patch('/orders/{order}/complete', [CashierOrderController::class, 'complete'])->name('cashier.orders.complete');
-```
-- [ ] `confirm($order)`:
-  - Validasi status === menunggu
-  - Update status → diterima
-  - Set shift_id = shift aktif
-  - Simpan OrderStatusLog
-  - Broadcast `OrderStatusUpdated` ke `order.{id}`
-  - Broadcast `NewOrderReceived` ke `kitchen`
-- [ ] `complete($order)`:
-  - Validasi status === siap_diambil
-  - Update status → selesai
-  - Simpan OrderStatusLog
-  - Broadcast `OrderStatusUpdated` ke `order.{id}`
-- [ ] Commit: `feat: cashier order confirm and complete`
+- [x] `CashierOrderController` — index (menunggu + siap_diambil), confirm, complete
+- [x] `confirmOrder`: menunggu → diterima, assign shift, log, broadcast OrderStatusUpdated + KitchenNewOrder
+- [x] `completeOrder`: siap_diambil → selesai, log, broadcast OrderStatusUpdated + OrderCompleted
+- [x] Routes: cashier.orders, cashier.orders.confirm, cashier.orders.complete
+- [x] Commit: part of `feat: sprint 9`
 
 ### Task 9.5 — Halaman Order Aktif Cashier (Vue)
-- [ ] Buat `resources/js/Pages/Cashier/Order/Index.vue`
-  - Tab: "Menunggu Konfirmasi" | "Siap Diambil"
-  - Card per order: nomor order, meja, items, total, waktu
-  - Tombol "Konfirmasi" (menunggu → diterima)
-  - Tombol "Selesai / Terima Pembayaran" (siap_diambil → selesai)
-  - Subscribe Reverb `cashier` channel → notif order baru masuk (PrimeVue Toast)
-- [ ] Commit: `feat: cashier active orders page`
+- [x] `Cashier/Order/Index.vue`:
+  - Tab "Menunggu Konfirmasi" / "Siap Diambil" dengan badge count
+  - Card per order: nomor, meja, item list, total, waktu
+  - Tombol "Konfirmasi" → PATCH confirm, hapus dari list (client-side)
+  - Tombol "Selesai / Terima Bayar" → PATCH complete, hapus dari list
+  - Subscribe `cashier` private → NewOrderReceived: Toast + tambah ke pending list
+  - Subscribe `orders` public → OrderReadyForPickup: Toast + tambah ke siap_diambil; OrderCompleted: hapus
+  - TransitionGroup slide/scale animation
+- [x] Commit: `feat: sprint 9 - POS cashier with shift management and order confirmation`
 
 ---
 
