@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Services\Auth\AuthRedirectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,48 +14,28 @@ use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
+    public function __construct(private AuthRedirectService $authRedirect) {}
+
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
+            'status'           => session('status'),
         ]);
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
-        $user = $request->user();
-
-        if ($user->hasRole('owner')) {
-            return redirect()->intended(route('owner.dashboard'));
-        } elseif ($user->hasRole('cashier')) {
-            return redirect()->intended(route('cashier.dashboard'));
-        } elseif ($user->hasRole('staff')) {
-            return redirect()->intended(route('staff.dashboard'));
-        }
-
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended($this->authRedirect->redirectRouteForUser($request->user()));
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

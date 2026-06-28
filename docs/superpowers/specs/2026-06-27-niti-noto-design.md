@@ -29,6 +29,90 @@ Sistem informasi manajemen warung kopi "Niti Noto" berbasis web dengan fitur POS
 
 ---
 
+## 2a. Architecture Patterns
+
+### Backend — Service Repository Pattern
+
+Semua business logic diorganisasi dalam tiga lapisan:
+
+```
+Controller → Service → Repository → Model
+```
+
+| Lapisan | Tanggung Jawab | Lokasi |
+|---|---|---|
+| `Controller` | Validasi request, panggil service, return Inertia response | `app/Http/Controllers/{Role}/` |
+| `Service` | Business logic, orkestrasi, aturan domain | `app/Services/` |
+| `Repository` | Query Eloquent, akses data saja | `app/Repositories/` |
+| `Model` | Definisi tabel, relasi, cast | `app/Models/` |
+
+**Aturan:**
+- Controller tidak boleh langsung query Eloquent — selalu via Service
+- Service tidak boleh return HTTP response — kembalikan data/exception saja
+- Repository tidak boleh mengandung business logic — hanya query
+- File upload ditangani di Service (bukan Controller, bukan Repository)
+
+**Contoh:**
+```php
+// StaffController.php
+public function store(StoreStaffRequest $request): RedirectResponse {
+    $this->staffService->create($request->validated(), $request->file('photo'));
+    return redirect()->route('owner.staff.index')->with('success', '...');
+}
+
+// StaffService.php
+public function create(array $data, ?UploadedFile $photo): User {
+    $photoPath = $photo ? $photo->store('staff', 'public') : null;
+    $user = $this->staffRepository->create([...$data, 'photo' => $photoPath]);
+    $user->assignRole($data['role']);
+    $this->staffRepository->createProfile($user->id, $data);
+    return $user;
+}
+
+// StaffRepository.php
+public function create(array $data): User {
+    return User::create($data);
+}
+```
+
+### Frontend — Feature-Based Component Architecture
+
+Komponen Vue diorganisasi berdasarkan **domain/fitur**, bukan berdasarkan tipe komponen.
+
+```
+resources/js/
+├── Pages/
+│   ├── Owner/
+│   │   ├── Staff/
+│   │   │   ├── Index.vue         ← page (thin, compose komponen)
+│   │   │   ├── Create.vue
+│   │   │   └── Edit.vue
+│   │   └── Menu/
+│   ├── Cashier/
+│   └── Customer/
+├── Components/
+│   ├── Owner/
+│   │   ├── Staff/
+│   │   │   ├── StaffTable.vue    ← feature component
+│   │   │   └── StaffForm.vue
+│   │   └── Menu/
+│   ├── Cashier/
+│   ├── Customer/
+│   └── Shared/                   ← benar-benar shared antar fitur
+│       ├── AppLayout.vue
+│       └── ...
+└── Layouts/
+```
+
+**Aturan:**
+- Page (`Pages/`) harus thin: compose komponen, tidak berisi logic besar
+- Komponen feature-specific → `Components/{Role}/{Feature}/`
+- Komponen yang dipakai 2+ fitur berbeda → `Components/Shared/`
+- Jangan buat folder generik seperti `Components/Forms/` atau `Components/Tables/`
+- Composable (logic reusable) → `composables/{feature}/use{Name}.js`
+
+---
+
 ## 3. Roles
 
 | Role | Deskripsi |

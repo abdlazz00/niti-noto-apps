@@ -6,6 +6,10 @@
 
 **Referensi:** `docs/superpowers/specs/2026-06-27-niti-noto-design.md`
 
+**Architecture Patterns (wajib di semua sprint):**
+- **BE:** Service Repository Pattern — `Controller → Service → Repository → Model`
+- **FE:** Feature-Based Component Architecture — komponen di `Components/{Role}/{Feature}/`, page di `Pages/` harus thin
+
 ---
 
 ## Sprint 0 — Project Setup & Foundation
