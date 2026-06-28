@@ -9,6 +9,7 @@ use App\Models\Table;
 use App\Repositories\MenuItemRepository;
 use App\Services\CustomerOrderService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -66,7 +67,10 @@ class OrderController extends Controller
             $request->validated('notes'),
         );
 
-        return redirect()->route('order.track', $order->id)
+        // Signed URL prevents IDOR enumeration — customer can only access their own order
+        $trackUrl = URL::signedRoute('order.track', ['order' => $order->id]);
+
+        return redirect($trackUrl)
             ->with('success', 'Pesanan berhasil dibuat! Harap tunggu konfirmasi kasir.');
     }
 }

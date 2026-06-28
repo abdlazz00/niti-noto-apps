@@ -10,6 +10,7 @@ class OrderNumberService
     {
         $today = now()->format('Ymd');
         $count = Order::whereDate('created_at', today())->count() + 1;
-        return sprintf('NNT-%s-%04d', $today, $count);
+        $rand  = strtoupper(bin2hex(random_bytes(2)));
+        return sprintf('NNT-%s-%04d-%s', $today, $count, $rand);
     }
 }
