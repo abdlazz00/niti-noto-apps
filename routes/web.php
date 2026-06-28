@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Owner\CategoryController;
+use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +22,13 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
     Route::get('/dashboard', fn () => Inertia::render('Owner/Dashboard'))->name('dashboard');
     Route::resource('staff', StaffController::class);
     Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('staff.toggle-active');
+});
+
+// Menu management — accessible by owner and cashier
+Route::middleware(['auth', 'role:owner|cashier'])->prefix('owner')->name('owner.')->group(function () {
+    Route::resource('categories', CategoryController::class)->except(['show', 'create', 'edit']);
+    Route::resource('menu-items', MenuItemController::class)->except(['show']);
+    Route::patch('menu-items/{menuItem}/toggle-active', [MenuItemController::class, 'toggleActive'])->name('menu-items.toggle-active');
 });
 
 // Cashier routes
