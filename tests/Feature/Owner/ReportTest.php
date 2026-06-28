@@ -29,7 +29,8 @@ class ReportTest extends TestCase
         $user->assignRole('customer');
 
         $response = $this->actingAs($user)->get('/owner/reports');
-        $response->assertStatus(403);
+        $response->assertRedirect('/dashboard');
+        $response->assertSessionHas('error', 'Anda tidak memiliki akses ke halaman tersebut.');
     }
 
     public function test_owner_can_access_reports_and_see_inertia_page(): void

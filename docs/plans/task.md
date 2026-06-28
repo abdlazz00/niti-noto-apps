@@ -1,6 +1,8 @@
 | Task | Description | Status |
 |---|---|---|
-| Task 13.1 | Implement & verify ReportService.php | done |
-| Task 13.2 | Implement & verify ReportController.php | done |
-| Task 13.3 | Implement & verify PDF & CSV export | done |
-| Task 13.4 | Implement & verify Owner Report Page (Index.vue) | done |
+| Task 14.1 | Setup global PrimeVue Toast watcher & Echo realtime notifications in AppLayout.vue | done |
+| Task 14.2 | Implement profile photo upload & hide Delete Account for non-owners | done |
+| Task 14.3 | Refactor controllers validation (ExpenseCategoryController) to FormRequest | done |
+| Task 14.4 | Create custom mobile-friendly Table Not Found (404) page | done |
+| Task 14.5 | Implement custom Exception Handler for unauthorized role access redirection | done |
+| Task 14.6 | Final verification check (responsive design, npm run build, run tests) | done |

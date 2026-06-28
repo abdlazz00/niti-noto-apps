@@ -3,26 +3,25 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreExpenseCategoryRequest;
+use App\Http\Requests\UpdateExpenseCategoryRequest;
 use App\Models\ExpenseCategory;
 use App\Repositories\ExpenseCategoryRepository;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class ExpenseCategoryController extends Controller
 {
     public function __construct(private ExpenseCategoryRepository $repository) {}
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreExpenseCategoryRequest $request): RedirectResponse
     {
-        $request->validate(['name' => ['required', 'string', 'max:100', 'unique:expense_categories,name']]);
-        $this->repository->create($request->name);
+        $this->repository->create($request->validated('name'));
         return back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-    public function update(Request $request, ExpenseCategory $expenseCategory): RedirectResponse
+    public function update(UpdateExpenseCategoryRequest $request, ExpenseCategory $expenseCategory): RedirectResponse
     {
-        $request->validate(['name' => ['required', 'string', 'max:100', 'unique:expense_categories,name,' . $expenseCategory->id]]);
-        $this->repository->update($expenseCategory, $request->name);
+        $this->repository->update($expenseCategory, $request->validated('name'));
         return back()->with('success', 'Kategori berhasil diperbarui.');
     }
 

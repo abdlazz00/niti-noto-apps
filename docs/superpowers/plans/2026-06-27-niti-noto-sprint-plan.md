@@ -784,41 +784,41 @@ Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name(
 **Goal:** Sidebar navigation lengkap, notifikasi, UX polish, dan siap production.
 
 ### Task 14.1 — AppLayout Sidebar Lengkap
-- [ ] Update `AppLayout.vue` — sidebar navigasi sesuai role (gunakan `$page.props.auth.user.roles`)
-- [ ] Active state highlight pada nav item aktif
-- [ ] Mobile: sidebar collapsible (hamburger menu)
-- [ ] Commit: `feat: complete sidebar navigation per role`
+- [x] Update `AppLayout.vue` — sidebar navigasi sesuai role (gunakan `$page.props.auth.user.roles`)
+- [x] Active state highlight pada nav item aktif
+- [x] Mobile: sidebar collapsible (hamburger menu)
+- [x] Commit: `feat: complete sidebar navigation per role`
 
 ### Task 14.2 — Toast Notifications
-- [ ] Setup global PrimeVue Toast di `AppLayout.vue`
-- [ ] Flash message dari Laravel → tampil sebagai Toast (success/error/info)
-- [ ] Reverb events (order baru, expense submitted) → Toast di halaman yang relevan
-- [ ] Commit: `feat: toast notifications`
+- [x] Setup global PrimeVue Toast di `AppLayout.vue`
+- [x] Flash message dari Laravel → tampil sebagai Toast (success/error/info)
+- [x] Reverb events (order baru, expense submitted) → Toast di halaman yang relevan
+- [x] Commit: `feat: toast notifications`
 
 ### Task 14.3 — Halaman Profile & Ganti Password
-- [ ] Route: `Route::get('/profile', [ProfileController::class, 'show'])`
-- [ ] Cashier/Staff/Owner bisa update nama, foto profil, ganti password
-- [ ] Commit: `feat: profile page`
+- [x] Route: `Route::get('/profile', [ProfileController::class, 'show'])` (GET /profile maps to edit)
+- [x] Cashier/Staff/Owner bisa update nama, foto profil, ganti password
+- [x] Commit: `feat: profile page`
 
 ### Task 14.4 — Validasi & Error Handling
-- [ ] Semua form request memiliki `FormRequest` class tersendiri (bukan inline validate)
-- [ ] 404 page custom untuk QR code tidak ditemukan
-- [ ] Unauthorized redirect yang jelas
-- [ ] Commit: `refactor: form requests and error handling`
+- [x] Semua form request memiliki `FormRequest` class tersendiri (bukan inline validate)
+- [x] 404 page custom untuk QR code tidak ditemukan
+- [x] Unauthorized redirect yang jelas
+- [x] Commit: `refactor: form requests and error handling`
 
 ### Task 14.5 — Mobile Responsiveness Check
-- [ ] Test semua halaman Customer di viewport mobile (375px)
-- [ ] Test AppLayout di tablet (768px)
-- [ ] Fix layout issues
-- [ ] Commit: `fix: mobile responsiveness`
+- [x] Test semua halaman Customer di viewport mobile (375px)
+- [x] Test AppLayout di tablet (768px)
+- [x] Fix layout issues
+- [x] Commit: `fix: mobile responsiveness`
 
 ### Task 14.6 — Production Config
-- [ ] `php artisan config:cache && php artisan route:cache && php artisan view:cache`
-- [ ] `npm run build`
-- [ ] Set APP_ENV=production, APP_DEBUG=false di `.env`
-- [ ] Queue worker untuk broadcast events: `php artisan queue:work`
-- [ ] Reverb server: `php artisan reverb:start`
-- [ ] Commit: `chore: production configuration`
+- [x] `php artisan config:cache && php artisan route:cache && php artisan view:cache`
+- [x] `npm run build`
+- [x] Set APP_ENV=production, APP_DEBUG=false di `.env`
+- [x] Queue worker untuk broadcast events: `php artisan queue:work`
+- [x] Reverb server: `php artisan reverb:start`
+- [x] Commit: `chore: production configuration`
 
 ---
 

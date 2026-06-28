@@ -92,9 +92,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 defineProps({
     title: {
@@ -105,6 +106,7 @@ defineProps({
 
 const sidebarOpen = ref(false);
 const page = usePage();
+const toast = useToast();
 
 const userRole = computed(() => {
     const roles = page.props.auth?.user?.roles ?? [];
@@ -112,6 +114,52 @@ const userRole = computed(() => {
 });
 
 const isActive = (href) => page.url.startsWith(href);
+
+// Watch for session flash messages
+watch(() => page.props.flash, (newFlash) => {
+    if (newFlash?.success) {
+        toast.add({ severity: 'success', summary: 'Sukses', detail: newFlash.success, life: 4000 });
+    }
+    if (newFlash?.error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: newFlash.error, life: 5000 });
+    }
+}, { deep: true, immediate: true });
+
+// Listen to Reverb private channels for realtime toasts
+onMounted(() => {
+    if (window.Echo) {
+        if (userRole.value === 'cashier') {
+            window.Echo.private('cashier')
+                .listen('NewOrderReceived', (e) => {
+                    toast.add({
+                        severity: 'info',
+                        summary: 'Pesanan Baru Masuk!',
+                        detail: `Order ${e.order_number} dari Meja ${e.table_name} (${e.items_count} item). Total: Rp ${e.total.toLocaleString('id-ID')}`,
+                        life: 6000
+                    });
+                });
+        }
+
+        if (userRole.value === 'owner') {
+            window.Echo.private('owner')
+                .listen('ExpenseSubmitted', (e) => {
+                    toast.add({
+                        severity: 'warn',
+                        summary: 'Pengajuan Pengeluaran!',
+                        detail: `${e.submitted_by_name} mengajukan Rp ${e.amount.toLocaleString('id-ID')} untuk ${e.title} (${e.category_name})`,
+                        life: 7000
+                    });
+                });
+        }
+    }
+});
+
+onUnmounted(() => {
+    if (window.Echo) {
+        window.Echo.leave('cashier');
+        window.Echo.leave('owner');
+    }
+});
 
 const ownerNav = [
     { label: 'Dashboard', href: '/owner/dashboard', icon: 'pi pi-home' },

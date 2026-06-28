@@ -22,7 +22,11 @@ class OrderController extends Controller
 
     public function menu(string $qrCode): Response
     {
-        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->firstOrFail();
+        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->first();
+
+        if (!$table) {
+            return Inertia::render('Customer/Error/TableNotFound');
+        }
 
         $activeItems = $this->menuItemRepository->getAllActive();
 
@@ -50,7 +54,11 @@ class OrderController extends Controller
 
     public function checkout(string $qrCode): Response
     {
-        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->firstOrFail();
+        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->first();
+
+        if (!$table) {
+            return Inertia::render('Customer/Error/TableNotFound');
+        }
 
         return Inertia::render('Customer/Order/Checkout', [
             'table' => ['id' => $table->id, 'number' => $table->number, 'name' => $table->name, 'qr_code' => $table->qr_code],
@@ -59,7 +67,11 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request, string $qrCode): RedirectResponse
     {
-        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->firstOrFail();
+        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->first();
+
+        if (!$table) {
+            return redirect()->back()->with('error', 'Meja tidak ditemukan atau tidak aktif.');
+        }
 
         $order = $this->customerOrderService->placeOrder(
             $table,
