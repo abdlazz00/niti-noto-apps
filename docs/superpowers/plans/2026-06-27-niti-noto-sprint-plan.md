@@ -561,44 +561,36 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Customer bisa track status order realtime di HP, display warung update otomatis.
 
 ### Task 8.1 — Reverb Events
-- [ ] Buat `app/Events/NewOrderReceived.php` — implements `ShouldBroadcast`, channel: `PrivateChannel('cashier')`
-- [ ] Buat `app/Events/OrderStatusUpdated.php` — implements `ShouldBroadcast`, channel: `PrivateChannel("order.{$this->order->id}")`
-- [ ] Buat `app/Events/OrderReadyForPickup.php` — implements `ShouldBroadcast`, channel: `Channel('orders')` (public)
-- [ ] Daftarkan channels di `routes/channels.php`:
-```php
-Broadcast::channel('cashier', fn($user) => $user->hasRole('cashier'));
-Broadcast::channel('kitchen', fn($user) => $user->hasRole('staff'));
-Broadcast::channel('order.{orderId}', function ($user, $orderId) {
-    // guest tidak punya user — handle via session
-    return true; // sederhanakan dulu, validasi lebih lanjut jika diperlukan
-});
-```
-- [ ] Commit: `feat: reverb broadcast events`
+- [x] `NewOrderReceived` — ShouldBroadcastNow, PrivateChannel('cashier')
+- [x] `OrderStatusUpdated` — ShouldBroadcastNow, public Channel('order.{id}') — guest-safe, no auth needed
+- [x] `OrderReadyForPickup` — ShouldBroadcastNow, public Channel('orders')
+- [x] `OrderCompleted` — ShouldBroadcastNow, public Channel('orders')
+- [x] Channels: cashier + kitchen private di routes/channels.php
+- [x] CustomerOrderService dispatch NewOrderReceived after placeOrder
+- [x] Commit: `feat: reverb broadcast events`
 
 ### Task 8.2 — TrackController
-- [ ] Route: `Route::get('/order/{order}/track', [TrackController::class, 'show'])->name('order.track')`
-- [ ] `show($orderId)`: load Order dengan items, return `inertia('Customer/Order/Track', compact('order'))`
-- [ ] Commit: `feat: track controller`
+- [x] Sudah dibuat di Sprint 7: TrackController::show(), GET /order/track/{order} (signed)
+- [x] Commit: already committed in Sprint 7
 
 ### Task 8.3 — Halaman Tracking Customer (Vue)
-- [ ] Buat `resources/js/Pages/Customer/Order/Track.vue`
-  - Header: nomor order + nama meja
-  - Progress stepper: Menunggu → Diterima → Sedang Dibuat → Siap Diambil → Selesai
-  - Status aktif di-highlight dengan warna vibrant
-  - Subscribe ke `Echo.private('order.{order.id}').listen('OrderStatusUpdated', ...)`
-  - Ketika status update → update UI tanpa refresh
-  - Jika status `siap_diambil` → tampilkan alert besar "Pesanan Kamu Siap Diambil!"
-- [ ] Commit: `feat: order tracking page with realtime`
+- [x] Track.vue diupdate:
+  - `currentStatus` ref (reactive, diupdate oleh event)
+  - `Echo.channel('order.{id}').listen('OrderStatusUpdated', ...)` — public channel (guest-safe)
+  - Status stepper update realtime dengan transisi smooth
+  - Full-screen amber overlay ketika status `siap_diambil` dengan tombol dismiss
+  - Live indicator pulse dot di bawah stepper
+- [x] Commit: `feat: order tracking page with realtime`
 
 ### Task 8.4 — Display Warung
-- [ ] Buat `DisplayController`: load semua order `siap_diambil`
-- [ ] Route: `Route::get('/display', [DisplayController::class, 'index'])->name('display')`
-- [ ] Buat `resources/js/Pages/Display/Index.vue` — gunakan `DisplayLayout`
-  - Grid besar nomor order yang siap diambil
-  - Subscribe ke `Echo.channel('orders').listen('OrderReadyForPickup', ...)` → tambah nomor ke grid
-  - Listen juga event `OrderCompleted` → hapus nomor dari grid
-  - Font besar (min 3rem), terbaca dari jarak jauh
-- [ ] Commit: `feat: display warung with realtime`
+- [x] `DisplayController::index()` — load `siap_diambil` orders dengan table
+- [x] Route: `GET /display` (public)
+- [x] `Display/Index.vue` (DisplayLayout):
+  - Grid amber cards: nomor order besar (clamp font untuk TV), nama meja
+  - TransitionGroup scale animation saat card masuk/keluar
+  - `Echo.channel('orders').listen('OrderReadyForPickup', ...)` → tambah ke grid
+  - `Echo.channel('orders').listen('OrderCompleted', ...)` → hapus dari grid
+- [x] Commit: `feat: display warung with realtime`
 
 ---
 
