@@ -647,27 +647,21 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Staff lihat antrian realtime dan bisa update status pembuatan.
 
 ### Task 10.1 — Staff Queue Controller
-- [ ] Buat `app/Http/Controllers/Staff/QueueController.php`
-- [ ] Routes:
-```php
-Route::get('/queue', [QueueController::class, 'index'])->name('staff.queue');
-Route::patch('/queue/{order}/update-status', [QueueController::class, 'updateStatus'])->name('staff.queue.update');
-```
-- [ ] `index()`: load orders dengan status `diterima` dan `sedang_dibuat`
-- [ ] `updateStatus($order, Request $request)`:
-  - Validasi status baru (diterima→sedang_dibuat atau sedang_dibuat→siap_diambil)
-  - Update status, simpan log
-  - Broadcast `OrderStatusUpdated` ke `order.{id}`
-  - Jika siap_diambil: broadcast `OrderReadyForPickup` ke `orders` (public, untuk display)
-- [ ] Commit: `feat: staff queue controller`
+- [x] `StaffQueueService` — getQueue (split diterima/sedang_dibuat), updateStatus (guard valid transitions, broadcast)
+- [x] `UpdateQueueStatusRequest` — validate status in [sedang_dibuat, siap_diambil]
+- [x] `QueueController` — index (pass diterima/sedangDibuat props), updateStatus (delegate to service)
+- [x] Routes: staff.queue, staff.queue.update
+- [x] Commit: part of `feat: sprint 10`
 
 ### Task 10.2 — Halaman Queue Staff (Vue)
-- [ ] Buat `resources/js/Pages/Staff/Queue.vue` — gunakan `AppLayout`
-  - 2 kolom: "Diterima" dan "Sedang Dibuat"
-  - Card per order: nomor order, nama meja, list item + catatan, tombol update status
-  - Subscribe Reverb `kitchen` channel → order baru masuk otomatis muncul tanpa refresh
-  - Animasi card masuk/keluar (Motion.js)
-- [ ] Commit: `feat: staff queue page with realtime`
+- [x] `Staff/Queue.vue`:
+  - 2-column layout: Diterima (amber) | Sedang Dibuat (blue)
+  - Card per order: nomor, meja, item list + catatan, badge status
+  - Tombol "Mulai Buat" (diterima → sedang_dibuat) — memindah card antar kolom client-side
+  - Tombol "Siap Diambil" (sedang_dibuat → siap_diambil) — hapus dari queue
+  - Subscribe `kitchen` private channel → KitchenNewOrder: push ke diterima + Motion.js animate-in
+  - Motion.js `animate()` dengan opacity+y+scale ease-out pada setiap card yang masuk
+- [x] Commit: `feat: sprint 10 - staff queue with realtime and motion animations`
 
 ---
 
