@@ -458,36 +458,39 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
 **Goal:** Owner/Cashier bisa kelola meja, generate QR code, dan print.
 
 ### Task 5.1 — Install QR Code Package
-- [ ] `composer require simplesoftwareio/simple-qrcode`
-- [ ] Commit: `chore: install qr code package`
+- [x] `npm install qrcode` (client-side generation, simplesoftwareio tidak tersedia offline)
+- [x] Commit: `chore: install qr code package`
 
 ### Task 5.2 — TableController & Routes
-- [ ] Buat `app/Http/Controllers/Owner/TableController.php`
-- [ ] Routes:
+- [x] Buat `app/Http/Controllers/Owner/TableController.php`
+- [x] Routes (print-all sebelum resource untuk hindari konflik):
 ```php
+Route::get('tables/print-all', [TableController::class, 'printAll'])->name('tables.print-all');
 Route::resource('tables', TableController::class)->except(['show']);
 Route::get('tables/{table}/qr', [TableController::class, 'qr'])->name('tables.qr');
-Route::get('tables/print-all', [TableController::class, 'printAll'])->name('tables.print-all');
+Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleActive'])->name('tables.toggle-active');
 ```
-- [ ] `store()`: validasi name, number; generate UUID untuk qr_code; simpan
-- [ ] `qr($id)`: return halaman print QR satu meja
-- [ ] `printAll()`: return halaman print semua meja aktif
-- [ ] Commit: `feat: table controller with qr generation`
+- [x] `store()`: validasi name, number; generate UUID untuk qr_code; simpan
+- [x] `qr($id)`: return halaman print QR satu meja
+- [x] `printAll()`: return halaman print semua meja aktif
+- [x] Commit: `feat: table controller with qr generation`
 
 ### Task 5.3 — Halaman Table Management (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Table/Index.vue`
+- [x] Buat `resources/js/Pages/Owner/Table/Index.vue`
   - DataTable: nomor, nama, QR preview kecil, status aktif, aksi
   - Tombol "Print QR", toggle aktif, edit, hapus
-- [ ] Commit: `feat: table index page`
+- [x] Buat `Components/Owner/Table/QRCanvas.vue` — client-side QR via npm:qrcode
+- [x] Buat `Components/Owner/Table/TableList.vue` — DataTable dengan QR preview
+- [x] Commit: `feat: table index page`
 
 ### Task 5.4 — Halaman Print QR (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Table/Print.vue`
-  - Layout print-friendly (A4 / kartu)
+- [x] Buat `resources/js/Pages/Owner/Table/Print.vue`
+  - Layout print-friendly (A4 / kartu grid)
   - Tampilkan QR code + nama meja + nomor meja
   - Tombol "Print" → trigger `window.print()`
-  - CSS `@media print` — sembunyikan tombol, tampilkan QR penuh
-- [ ] QR code di-generate server-side sebagai SVG inline atau base64 PNG
-- [ ] Commit: `feat: qr print page`
+  - CSS `@media print` — sembunyikan controls, tampilkan QR penuh
+- [x] QR code di-generate client-side via QRCanvas component
+- [x] Commit: `feat: qr print page`
 
 ---
 
