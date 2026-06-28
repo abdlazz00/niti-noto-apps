@@ -12,6 +12,7 @@ use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
 use App\Http\Controllers\Owner\TableController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Staff\QueueController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -74,6 +75,10 @@ Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->name('cashier.')
 // Staff routes
 Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Staff/Dashboard'))->name('dashboard');
+
+    // Kitchen queue
+    Route::get('/queue', [QueueController::class, 'index'])->name('queue');
+    Route::patch('/queue/{order}/update-status', [QueueController::class, 'updateStatus'])->name('queue.update');
 });
 
 // Profile
