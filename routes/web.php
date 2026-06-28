@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Owner\CategoryController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
+use App\Http\Controllers\Owner\TableController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,11 +25,17 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
     Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('staff.toggle-active');
 });
 
-// Menu management — accessible by owner and cashier
+// Menu & Table management — accessible by owner and cashier
 Route::middleware(['auth', 'role:owner|cashier'])->prefix('owner')->name('owner.')->group(function () {
     Route::resource('categories', CategoryController::class)->except(['show', 'create', 'edit']);
     Route::resource('menu-items', MenuItemController::class)->except(['show']);
     Route::patch('menu-items/{menuItem}/toggle-active', [MenuItemController::class, 'toggleActive'])->name('menu-items.toggle-active');
+
+    // print-all must be registered before the {table} resource routes
+    Route::get('tables/print-all', [TableController::class, 'printAll'])->name('tables.print-all');
+    Route::resource('tables', TableController::class)->except(['show']);
+    Route::get('tables/{table}/qr', [TableController::class, 'qr'])->name('tables.qr');
+    Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleActive'])->name('tables.toggle-active');
 });
 
 // Cashier routes
