@@ -529,40 +529,30 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Customer bisa review order, submit, dan mendapat nomor order.
 
 ### Task 7.1 — Checkout Route & Controller
-- [ ] Route: `Route::get('/order/{qrCode}/checkout', ...)->name('order.checkout')`
-- [ ] Route: `Route::post('/order/{qrCode}', [CustomerOrderController::class, 'store'])->name('order.store')`
-- [ ] `checkout($qrCode)`: validasi cart dari session, return halaman review
-- [ ] `store(Request $request, $qrCode)`:
-  - Validasi: items array (menu_item_id, qty, notes)
-  - Generate `order_number` format: `NNT-YYYYMMDD-XXXX` (sequential per hari)
-  - Buat Order (status: menunggu, user_id: auth user atau null untuk guest)
-  - Buat OrderItems (snapshot harga dari MenuItem)
-  - Hitung total
-  - Simpan order_status_log pertama
-  - Broadcast `NewOrderReceived` ke channel `cashier`
-  - Redirect ke `/order/{orderId}/track`
-- [ ] Commit: `feat: order checkout and store`
+- [x] Route: `GET /order/{qrCode}/checkout` → `checkout()` (return page, cart di client)
+- [x] Route: `POST /order/{qrCode}` → `store()` (submit order)
+- [x] Route: `GET /order/track/{order}` → `TrackController::show()` (placeholder, Sprint 8 add realtime)
+- [x] `checkout($qrCode)`: find table, return Checkout page (cart dari client sessionStorage)
+- [x] `store()`: validate items, delegate ke CustomerOrderService, redirect ke order.track
+- [x] CustomerOrderService: price snapshot dari DB, hitung total, create order+items+statusLog
+- [x] Commit: `feat: order checkout and store`
 
 ### Task 7.2 — Order Number Generator
-- [ ] Buat `app/Services/OrderNumberService.php`:
-```php
-public function generate(): string {
-    $today = now()->format('Ymd');
-    $count = Order::whereDate('created_at', today())->count() + 1;
-    return sprintf('NNT-%s-%04d', $today, $count);
-}
-```
-- [ ] Inject ke `store()` method
-- [ ] Commit: `feat: order number generator service`
+- [x] Buat `app/Services/OrderNumberService.php` — generate `NNT-YYYYMMDD-XXXX`
+- [x] Buat `app/Repositories/OrderRepository.php` — create, createItems (bulk insert), createStatusLog, findWithDetails
+- [x] Commit: `feat: order number generator service`
 
 ### Task 7.3 — Halaman Checkout (Vue)
-- [ ] Buat `resources/js/Pages/Customer/Order/Checkout.vue`
-  - List item order (readonly): nama, qty, harga satuan, subtotal
-  - Total keseluruhan
-  - Field notes (opsional untuk order)
-  - Tombol "Konfirmasi Pesanan" + tombol "Kembali"
-  - Mobile-first
-- [ ] Commit: `feat: checkout page`
+- [x] Buat `resources/js/Pages/Customer/Order/Checkout.vue`
+  - Baca cart dari `useCart(qrCode)` composable (sessionStorage)
+  - Readonly list: thumbnail, nama, qty × harga, subtotal
+  - Field catatan (Textarea, opsional)
+  - `router.post()` ke order.store, clear cart on success
+- [x] Buat `resources/js/Pages/Customer/Order/Track.vue` (placeholder Sprint 8)
+  - Status stepper 5 langkah (menunggu→selesai) dengan highlight current step
+  - Daftar item + total + catatan
+  - Sprint 8 akan tambah Reverb realtime subscription
+- [x] Commit: `feat: checkout page`
 
 ---
 
