@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Owner\StaffController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,19 +15,21 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-// Role-based dashboards
-Route::middleware(['auth'])->group(function () {
-    Route::get('/owner/dashboard', function () {
-        return Inertia::render('Owner/Dashboard');
-    })->middleware('role:owner')->name('owner.dashboard');
+// Owner routes
+Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->group(function () {
+    Route::get('/dashboard', fn () => Inertia::render('Owner/Dashboard'))->name('dashboard');
+    Route::resource('staff', StaffController::class);
+    Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('staff.toggle-active');
+});
 
-    Route::get('/cashier/dashboard', function () {
-        return Inertia::render('Cashier/Dashboard');
-    })->middleware('role:cashier')->name('cashier.dashboard');
+// Cashier routes
+Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->name('cashier.')->group(function () {
+    Route::get('/dashboard', fn () => Inertia::render('Cashier/Dashboard'))->name('dashboard');
+});
 
-    Route::get('/staff/dashboard', function () {
-        return Inertia::render('Staff/Dashboard');
-    })->middleware('role:staff')->name('staff.dashboard');
+// Staff routes
+Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->group(function () {
+    Route::get('/dashboard', fn () => Inertia::render('Staff/Dashboard'))->name('dashboard');
 });
 
 // Profile

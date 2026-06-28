@@ -371,47 +371,39 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
 **Goal:** Owner bisa CRUD internal user (owner/cashier/staff) lengkap dengan foto dan profil.
 
 ### Task 3.1 — StaffController & Routes
-- [ ] Buat `app/Http/Controllers/Owner/StaffController.php` (resource controller)
-- [ ] Tambah routes di owner group:
-```php
-Route::resource('staff', StaffController::class);
-Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('staff.toggle-active');
-```
-- [ ] Commit: `feat: staff routes`
+- [x] Buat `app/Http/Controllers/Owner/StaffController.php` (resource controller)
+- [x] Refaktor web.php ke proper owner/cashier/staff route groups dengan prefix + name
+- [x] Tambah `Route::resource('staff', StaffController::class)` + toggle-active route
+- [x] Commit: `feat: staff routes`
 
 ### Task 3.2 — StaffController Logic
-- [ ] `index()` — return list semua internal user (role: owner/cashier/staff) dengan staffProfile
-- [ ] `create()` — return form create
-- [ ] `store(Request $request)`:
-  - Validasi: name, email, password, role (in:owner,cashier,staff), photo (nullable, image)
-  - Upload foto ke `storage/app/public/staff/`
-  - Buat User, assign role, buat StaffProfile
-- [ ] `edit($id)` — return user + staffProfile
-- [ ] `update(Request $request, $id)`:
-  - Validasi (password nullable saat update)
-  - Update user, ganti foto jika ada, update staffProfile
-- [ ] `destroy($id)` — soft-delete: `is_active = false` (jangan hapus data)
-- [ ] `toggleActive($id)` — toggle is_active
-- [ ] Commit: `feat: staff controller crud logic`
+- [x] `index()` — return list semua internal user (role: owner/cashier/staff) dengan staffProfile
+- [x] `create()` — return form create
+- [x] `store(Request $request)` — validasi, upload foto ke storage/staff, buat User + role + StaffProfile
+- [x] `edit($id)` — return user + staffProfile
+- [x] `update(Request $request, $id)` — password nullable, ganti foto jika ada, syncRoles, updateOrCreate staffProfile
+- [x] `destroy($id)` — soft-delete: `is_active = false`
+- [x] `toggleActive($id)` — toggle is_active
+- [x] Commit: `feat: staff controller crud logic`
 
 ### Task 3.3 — Halaman List Staff (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Staff/Index.vue`
-  - PrimeVue `DataTable` dengan kolom: foto, nama, email, role badge, status, aksi
-  - Tombol "Tambah Staff", edit, toggle aktif
-  - Filter/search by nama
-- [ ] Commit: `feat: staff index page`
+- [x] Buat `resources/js/Pages/Owner/Staff/Index.vue`
+  - PrimeVue `DataTable` dengan kolom: foto, nama/email, role badge (Tag), status badge, aksi
+  - Search filter nama/email, paginator
+  - Tombol tambah, edit, toggle aktif, nonaktifkan (ConfirmDialog)
+- [x] Commit: `feat: staff index page`
 
 ### Task 3.4 — Halaman Create/Edit Staff (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Staff/Create.vue`
-- [ ] Buat `resources/js/Pages/Owner/Staff/Edit.vue`
-  - Form: nama, email, password, role (dropdown), foto (upload preview), phone, address, join_date, notes
-  - Preview foto sebelum upload
-- [ ] Commit: `feat: staff create and edit pages`
+- [x] Buat `resources/js/Pages/Owner/Staff/Create.vue`
+- [x] Buat `resources/js/Pages/Owner/Staff/Edit.vue`
+  - Form: nama, email, password, role (Select), foto upload + preview, phone, address, join_date (DatePicker), notes
+- [x] Commit: `feat: staff create and edit pages`
 
 ### Task 3.5 — Storage Link & Foto
-- [ ] `php artisan storage:link`
-- [ ] Pastikan foto staff muncul di tabel dengan `asset('storage/staff/filename.jpg')`
-- [ ] Commit: `chore: configure public storage`
+- [x] `php artisan storage:link` — public/storage → storage/app/public
+- [x] Foto staff di-serve via `/storage/staff/filename`
+- [x] `npm run build` — build sukses
+- [x] Commit: `feat: sprint 3 - staff management`
 
 ---
 
