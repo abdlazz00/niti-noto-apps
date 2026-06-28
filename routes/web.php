@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
+use App\Http\Controllers\Customer\TrackController;
 use App\Http\Controllers\Owner\CategoryController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
@@ -16,6 +17,9 @@ Route::get('/', function () {
 
 // Public customer routes (no auth required)
 Route::get('/order/{qrCode}', [CustomerOrderController::class, 'menu'])->name('order.menu');
+Route::get('/order/{qrCode}/checkout', [CustomerOrderController::class, 'checkout'])->name('order.checkout');
+Route::post('/order/{qrCode}', [CustomerOrderController::class, 'store'])->name('order.store');
+Route::get('/order/track/{order}', [TrackController::class, 'show'])->name('order.track');
 
 // Generic dashboard (customer fallback)
 Route::get('/dashboard', function () {

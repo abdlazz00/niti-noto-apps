@@ -3,15 +3,21 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\StoreOrderRequest;
 use App\Models\Category;
 use App\Models\Table;
 use App\Repositories\MenuItemRepository;
+use App\Services\CustomerOrderService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class OrderController extends Controller
 {
-    public function __construct(private MenuItemRepository $menuItemRepository) {}
+    public function __construct(
+        private MenuItemRepository $menuItemRepository,
+        private CustomerOrderService $customerOrderService,
+    ) {}
 
     public function menu(string $qrCode): Response
     {
@@ -39,5 +45,28 @@ class OrderController extends Controller
             'categories' => $categories,
             'items'      => $items,
         ]);
+    }
+
+    public function checkout(string $qrCode): Response
+    {
+        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->firstOrFail();
+
+        return Inertia::render('Customer/Order/Checkout', [
+            'table' => ['id' => $table->id, 'number' => $table->number, 'name' => $table->name, 'qr_code' => $table->qr_code],
+        ]);
+    }
+
+    public function store(StoreOrderRequest $request, string $qrCode): RedirectResponse
+    {
+        $table = Table::where('qr_code', $qrCode)->where('is_active', true)->firstOrFail();
+
+        $order = $this->customerOrderService->placeOrder(
+            $table,
+            $request->validated('items'),
+            $request->validated('notes'),
+        );
+
+        return redirect()->route('order.track', $order->id)
+            ->with('success', 'Pesanan berhasil dibuat! Harap tunggu konfirmasi kasir.');
     }
 }
