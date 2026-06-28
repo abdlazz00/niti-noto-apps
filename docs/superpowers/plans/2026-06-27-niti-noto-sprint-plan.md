@@ -739,35 +739,34 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Owner bisa lihat laporan lengkap, grafik, komparasi periode, dan export.
 
 ### Task 13.1 — ReportService
-- [ ] Buat `app/Services/ReportService.php` dengan methods:
+- [x] Buat `app/Services/ReportService.php` dengan methods:
   - `revenueByPeriod(Carbon $from, Carbon $to): array` — total revenue, total expense, laba bersih
   - `revenueByDay(Carbon $from, Carbon $to): array` — data per hari untuk grafik
   - `topMenuItems(Carbon $from, Carbon $to, int $limit = 10): array` — menu terlaris
   - `revenueByCategory(Carbon $from, Carbon $to): array` — breakdown per kategori
   - `shiftSummary(Carbon $from, Carbon $to): array` — ringkasan per shift + cashier
   - `periodComparison(Carbon $currentFrom, Carbon $currentTo): array` — bulan ini vs bulan lalu
-- [ ] Commit: `feat: report service`
+- [x] Commit: `feat: report service`
 
 ### Task 13.2 — ReportController
-- [ ] Buat `app/Http/Controllers/Owner/ReportController.php`
-- [ ] Routes:
+- [x] Buat `app/Http/Controllers/Owner/ReportController.php`
+- [x] Routes:
 ```php
 Route::get('/reports', [ReportController::class, 'index'])->name('owner.reports');
 Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('owner.reports.pdf');
-Route::get('/reports/export-excel', [ReportController::class, 'exportExcel'])->name('owner.reports.excel');
+Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('owner.reports.csv');
 ```
-- [ ] `index(Request $request)`: terima filter `period` (today/week/month/custom), `from`, `to`; return semua data report
-- [ ] Commit: `feat: report controller`
+- [x] `index(Request $request)`: terima filter `period` (today/week/month/custom), `from`, `to`; return semua data report
+- [x] Commit: `feat: report controller`
 
-### Task 13.3 — Export PDF & Excel
-- [ ] Install: `composer require barryvdh/laravel-dompdf` (PDF) + `composer require maatwebsite/excel` (Excel)
-- [ ] Buat `app/Exports/ReportExport.php` (Laravel Excel)
-- [ ] Buat `resources/views/reports/pdf.blade.php` (DomPDF view)
-- [ ] `exportPdf()` dan `exportExcel()` gunakan filter periode yang sama
-- [ ] Commit: `feat: pdf and excel export`
+### Task 13.3 — Export PDF & CSV
+- [x] Install: `composer require barryvdh/laravel-dompdf` (PDF)
+- [x] Buat `resources/views/reports/pdf.blade.php` (DomPDF view)
+- [x] `exportPdf()` dan `exportCsv()` gunakan filter periode yang sama
+- [x] Commit: `feat: pdf and csv export`
 
 ### Task 13.4 — Halaman Laporan (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Report/Index.vue`
+- [x] Buat `resources/js/Pages/Owner/Report/Index.vue`
   - Filter periode: preset (Hari Ini, Minggu Ini, Bulan Ini) + custom range
   - Summary cards: Revenue, Expense, Laba Bersih — animasi counter Motion.js
   - Line chart: revenue vs expense per hari — animasi masuk Motion.js
@@ -775,8 +774,8 @@ Route::get('/reports/export-excel', [ReportController::class, 'exportExcel'])->n
   - Tabel top 10 menu terlaris
   - Tabel ringkasan per shift + cashier
   - Section komparasi: bulan ini vs bulan lalu (persentase naik/turun)
-  - Tombol Export PDF dan Export Excel
-- [ ] Commit: `feat: financial report page`
+  - Tombol Export PDF dan Export CSV
+- [x] Commit: `feat: financial report page`
 
 ---
 

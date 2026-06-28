@@ -12,6 +12,7 @@ use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\Owner\CategoryController;
 use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\ExpenseCategoryController;
+use App\Http\Controllers\Owner\ReportController;
 use App\Http\Controllers\Owner\ExpenseController as OwnerExpenseController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
@@ -50,6 +51,11 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
     Route::get('/expenses', [OwnerExpenseController::class, 'index'])->name('expenses');
     Route::patch('/expenses/{expense}/approve', [OwnerExpenseController::class, 'approve'])->name('expenses.approve');
     Route::patch('/expenses/{expense}/reject', [OwnerExpenseController::class, 'reject'])->name('expenses.reject');
+
+    // Financial reports
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports');
+    Route::get('/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('reports.pdf');
+    Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.csv');
 
     // Expense categories
     Route::post('/expense-categories', [ExpenseCategoryController::class, 'store'])->name('expense-categories.store');
