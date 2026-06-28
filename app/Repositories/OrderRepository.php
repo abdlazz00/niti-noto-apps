@@ -40,4 +40,22 @@ class OrderRepository
     {
         return $order->load('table', 'items.menuItem');
     }
+
+    public function updateStatus(Order $order, string $status): void
+    {
+        $order->update(['status' => $status]);
+    }
+
+    public function assignShift(Order $order, int $shiftId): void
+    {
+        $order->update(['shift_id' => $shiftId]);
+    }
+
+    public function getByStatuses(array $statuses): \Illuminate\Database\Eloquent\Collection
+    {
+        return Order::whereIn('status', $statuses)
+            ->with('table', 'items.menuItem')
+            ->orderBy('created_at')
+            ->get();
+    }
 }

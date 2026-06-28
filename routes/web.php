@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cashier\OrderController as CashierOrderController;
+use App\Http\Controllers\Cashier\PosController;
+use App\Http\Controllers\Cashier\ShiftController;
 use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\TrackController;
 use App\Http\Controllers\DisplayController;
@@ -53,6 +56,19 @@ Route::middleware(['auth', 'role:owner|cashier'])->prefix('owner')->name('owner.
 // Cashier routes
 Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->name('cashier.')->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Cashier/Dashboard'))->name('dashboard');
+
+    // Shift
+    Route::post('/shift/start', [ShiftController::class, 'start'])->name('shift.start');
+    Route::post('/shift/end', [ShiftController::class, 'end'])->name('shift.end');
+
+    // POS
+    Route::get('/pos', [PosController::class, 'index'])->name('pos');
+    Route::post('/pos/order', [PosController::class, 'store'])->name('pos.store');
+
+    // Order management
+    Route::get('/orders', [CashierOrderController::class, 'index'])->name('orders');
+    Route::patch('/orders/{order}/confirm', [CashierOrderController::class, 'confirm'])->name('orders.confirm');
+    Route::patch('/orders/{order}/complete', [CashierOrderController::class, 'complete'])->name('orders.complete');
 });
 
 // Staff routes
