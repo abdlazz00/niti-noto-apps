@@ -1,31 +1,74 @@
 <script setup>
 import CustomerLayout from '@/Layouts/CustomerLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 
 defineOptions({ layout: CustomerLayout });
 
 const props = defineProps({ order: Object });
 
+const currentStatus = ref(props.order.status);
+
 const statusSteps = [
-    { key: 'menunggu',     label: 'Menunggu',      icon: 'pi-clock' },
-    { key: 'diterima',     label: 'Diterima',       icon: 'pi-check' },
-    { key: 'sedang_dibuat', label: 'Dibuat',        icon: 'pi-cog' },
-    { key: 'siap_diambil', label: 'Siap Diambil',   icon: 'pi-bell' },
-    { key: 'selesai',      label: 'Selesai',        icon: 'pi-check-circle' },
+    { key: 'menunggu',      label: 'Menunggu',     icon: 'pi-clock' },
+    { key: 'diterima',      label: 'Diterima',     icon: 'pi-check' },
+    { key: 'sedang_dibuat', label: 'Sedang Dibuat', icon: 'pi-cog' },
+    { key: 'siap_diambil',  label: 'Siap Diambil', icon: 'pi-bell' },
+    { key: 'selesai',       label: 'Selesai',      icon: 'pi-check-circle' },
 ];
 
 const currentStepIndex = computed(() =>
-    statusSteps.findIndex(s => s.key === props.order.status)
+    statusSteps.findIndex(s => s.key === currentStatus.value)
 );
+
+const isReady = computed(() => currentStatus.value === 'siap_diambil');
 
 function formatPrice(price) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
 }
+
+// Realtime: subscribe to public order channel
+let echoChannel = null;
+
+onMounted(() => {
+    if (window.Echo) {
+        echoChannel = window.Echo.channel('order.' + props.order.id);
+        echoChannel.listen('OrderStatusUpdated', (e) => {
+            currentStatus.value = e.status;
+        });
+    }
+});
+
+onUnmounted(() => {
+    if (window.Echo) {
+        window.Echo.leave('order.' + props.order.id);
+    }
+});
 </script>
 
 <template>
     <Head :title="`Order ${order.order_number}`" />
+
+    <!-- Siap Diambil alert -->
+    <Transition name="fade">
+        <div
+            v-if="isReady"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-amber-500/95 p-6"
+        >
+            <div class="text-center text-white">
+                <div class="text-6xl mb-4">🔔</div>
+                <h2 class="text-3xl font-black mb-2">Pesananmu Siap!</h2>
+                <p class="text-amber-100 text-lg mb-1">{{ order.order_number }}</p>
+                <p class="text-amber-100">Silakan ambil pesananmu di kasir</p>
+                <button
+                    class="mt-8 bg-white text-amber-600 font-bold px-8 py-3 rounded-2xl text-sm"
+                    @click="currentStatus = 'selesai'"
+                >
+                    OK, Sudah Diambil
+                </button>
+            </div>
+        </div>
+    </Transition>
 
     <div class="p-4 space-y-5">
         <!-- Order number header -->
@@ -47,12 +90,11 @@ function formatPrice(price) {
                     :key="step.key"
                     class="flex items-center gap-3"
                 >
-                    <!-- Step indicator -->
                     <div class="flex flex-col items-center">
                         <div
-                            class="w-8 h-8 rounded-full flex items-center justify-center text-sm transition-colors"
+                            class="w-8 h-8 rounded-full flex items-center justify-center text-sm transition-all duration-500"
                             :class="{
-                                'bg-amber-500 text-white shadow-md shadow-amber-200': idx === currentStepIndex,
+                                'bg-amber-500 text-white shadow-lg shadow-amber-200 scale-110': idx === currentStepIndex,
                                 'bg-emerald-500 text-white': idx < currentStepIndex,
                                 'bg-slate-100 text-slate-400': idx > currentStepIndex,
                             }"
@@ -62,14 +104,13 @@ function formatPrice(price) {
                         </div>
                         <div
                             v-if="idx < statusSteps.length - 1"
-                            class="w-0.5 h-5 mt-0.5"
+                            class="w-0.5 h-5 mt-0.5 transition-colors duration-500"
                             :class="idx < currentStepIndex ? 'bg-emerald-300' : 'bg-slate-100'"
                         />
                     </div>
 
-                    <!-- Label -->
                     <p
-                        class="text-sm font-medium"
+                        class="text-sm font-medium transition-colors duration-300"
                         :class="{
                             'text-amber-600 font-bold': idx === currentStepIndex,
                             'text-emerald-600': idx < currentStepIndex,
@@ -77,15 +118,14 @@ function formatPrice(price) {
                         }"
                     >
                         {{ step.label }}
-                        <span v-if="idx === currentStepIndex" class="ml-2 text-xs font-normal">← sekarang</span>
+                        <span v-if="idx === currentStepIndex" class="ml-2 text-xs font-normal opacity-70">← sekarang</span>
                     </p>
                 </div>
             </div>
 
-            <!-- Realtime note -->
-            <p class="mt-4 text-xs text-slate-400 text-center">
-                <i class="pi pi-info-circle mr-1" />
-                Refresh halaman untuk update status terbaru
+            <p class="mt-4 text-xs text-slate-400 text-center flex items-center justify-center gap-1">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                Live update aktif
             </p>
         </div>
 
@@ -121,8 +161,13 @@ function formatPrice(price) {
                 :href="route('order.menu', order.table.qr_code)"
                 class="text-amber-500 font-semibold text-sm"
             >
-                <i class="pi pi-arrow-left mr-1 text-xs" /> Kembali ke Menu
+                <i class="pi pi-arrow-left mr-1 text-xs" /> Pesan Lagi
             </Link>
         </div>
     </div>
 </template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>

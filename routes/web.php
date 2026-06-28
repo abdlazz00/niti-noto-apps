@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\TrackController;
+use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\Owner\CategoryController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
@@ -14,6 +15,9 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+// Public display screen (TV / monitor warung)
+Route::get('/display', [DisplayController::class, 'index'])->name('display');
 
 // Public customer routes (no auth required)
 Route::get('/order/{qrCode}', [CustomerOrderController::class, 'menu'])->name('order.menu');
