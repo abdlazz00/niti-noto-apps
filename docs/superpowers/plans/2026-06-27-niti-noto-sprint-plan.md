@@ -416,40 +416,40 @@ Route::middleware(['auth', 'role:staff'])->prefix('staff')->name('staff.')->grou
 **Goal:** Owner dan Cashier bisa kelola kategori dan menu item lengkap dengan foto.
 
 ### Task 4.1 — Category CRUD
-- [ ] Buat `app/Http/Controllers/Owner/CategoryController.php`
-- [ ] Routes di owner group: `Route::resource('categories', CategoryController::class)->except(['show'])`
-- [ ] Logic: index, store (validasi name), update, destroy (cek jika ada menu item → tolak delete)
-- [ ] Buat `resources/js/Pages/Owner/Menu/Categories.vue`
+- [x] Buat `app/Http/Controllers/Owner/CategoryController.php`
+- [x] Routes di owner group: `Route::resource('categories', CategoryController::class)->except(['show'])`
+- [x] Logic: index, store (validasi name), update, destroy (cek jika ada menu item → tolak delete)
+- [x] Buat `resources/js/Pages/Owner/Menu/Categories.vue`
   - DataTable kategori, inline edit atau modal, tombol hapus dengan konfirmasi
-- [ ] Commit: `feat: category crud`
+- [x] Commit: `feat: category crud`
 
 ### Task 4.2 — MenuItem CRUD - Controller
-- [ ] Buat `app/Http/Controllers/Owner/MenuItemController.php` (resource)
-- [ ] Routes: `Route::resource('menu-items', MenuItemController::class)->except(['show'])`
-- [ ] `store()`: validasi name, category_id, price, image (nullable, image), is_active; upload foto ke `storage/app/public/menu/`
-- [ ] `update()`: sama, foto baru replace foto lama
-- [ ] `destroy()`: hapus foto dari storage, hapus record
-- [ ] `toggleActive()`: toggle is_active
-- [ ] Commit: `feat: menu item controller`
+- [x] Buat `app/Http/Controllers/Owner/MenuItemController.php` (resource)
+- [x] Routes: `Route::resource('menu-items', MenuItemController::class)->except(['show'])`
+- [x] `store()`: validasi name, category_id, price, image (nullable, image), is_active; upload foto ke `storage/app/public/menu/`
+- [x] `update()`: sama, foto baru replace foto lama
+- [x] `destroy()`: hapus foto dari storage, hapus record
+- [x] `toggleActive()`: toggle is_active
+- [x] Commit: `feat: menu item controller`
 
 ### Task 4.3 — Halaman Menu Items (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Menu/Index.vue`
+- [x] Buat `resources/js/Pages/Owner/Menu/Index.vue`
   - Grid atau DataTable menu item dengan gambar thumbnail
   - Filter per kategori, search nama
   - Badge aktif/nonaktif, toggle switch
   - Tombol tambah, edit, hapus
-- [ ] Commit: `feat: menu item index page`
+- [x] Commit: `feat: menu item index page`
 
 ### Task 4.4 — Create/Edit Menu Item (Vue)
-- [ ] Buat `resources/js/Pages/Owner/Menu/Create.vue`
-- [ ] Buat `resources/js/Pages/Owner/Menu/Edit.vue`
+- [x] Buat `resources/js/Pages/Owner/Menu/Create.vue`
+- [x] Buat `resources/js/Pages/Owner/Menu/Edit.vue`
   - Form: nama, kategori (dropdown), harga, foto (upload + preview), status aktif
-- [ ] Commit: `feat: menu create and edit pages`
+- [x] Commit: `feat: menu create and edit pages`
 
 ### Task 4.5 — Sinkronisasi Cashier
-- [ ] Duplikasi route menu management ke cashier group (atau gunakan shared controller)
-- [ ] Pastikan Cashier juga bisa akses Menu Management
-- [ ] Commit: `feat: cashier can access menu management`
+- [x] Duplikasi route menu management ke cashier group (atau gunakan shared controller)
+- [x] Pastikan Cashier juga bisa akses Menu Management
+- [x] Commit: `feat: cashier can access menu management`
 
 ---
 
