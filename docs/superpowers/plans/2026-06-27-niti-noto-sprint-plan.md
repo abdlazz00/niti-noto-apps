@@ -708,36 +708,29 @@ Route::patch('tables/{table}/toggle-active', [TableController::class, 'toggleAct
 **Goal:** Dashboard informatif per role dengan animasi Motion.js untuk Owner.
 
 ### Task 12.1 — Dashboard Data (Owner)
-- [ ] Update `OwnerDashboardController::index()`:
-  - Revenue hari ini (sum orders selesai)
-  - Total order hari ini
-  - Expense pending count
-  - Data grafik 7 hari terakhir (revenue per hari)
-- [ ] Commit: `feat: owner dashboard data`
+- [x] `OwnerDashboardController` — revenue today, orders today, expense pending, laba bersih (revenue - approved expenses), 7-day chartData array [{label, revenue}]
+- [x] `CashierDashboardController` — shift aktif, orders_today, completed_today, active_orders, revenue_shift
+- [x] `StaffDashboardController` — active_queue, completed_today
+- [x] Routes updated: all 3 dashboard routes now use dedicated controllers
+- [x] Commit: part of sprint 12
 
 ### Task 12.2 — Dashboard Owner (Vue)
-- [ ] Update `resources/js/Pages/Owner/Dashboard.vue`
-  - 4 stat cards: Revenue Hari Ini, Total Order, Expense Pending, Laba Bersih
-  - Animasi counter angka dengan Motion.js saat halaman load
-  - Line chart tren 7 hari (PrimeVue Chart.js atau apex charts)
-  - Animasi chart masuk dari bawah dengan Motion.js
-- [ ] Commit: `feat: owner dashboard with motion animations`
+- [x] 4 stat cards: Revenue, Total Order, Expense Pending, Laba Bersih
+- [x] Motion.js `animate(0, target, { onUpdate })` counter animation pada semua stat values
+- [x] SVG inline bar chart (7 hari): bar hari ini = amber-500, hari sebelumnya = amber-200
+- [x] Quick link cards: Expense Pending, Kelola Menu, Kelola Staff
+- [x] Commit: part of sprint 12
 
 ### Task 12.3 — Dashboard Cashier (Vue)
-- [ ] Update `CashierDashboardController::index()`: ringkasan shift berjalan, total order hari ini, revenue shift
-- [ ] Update `resources/js/Pages/Cashier/Dashboard.vue`
-  - Status shift (buka/tutup tombol di sini)
-  - Stat: order aktif, order selesai hari ini, revenue shift
-  - Animasi counter dengan Motion.js
-- [ ] Commit: `feat: cashier dashboard`
+- [x] Shift panel: status aktif (green pulse) + tombol Mulai/Tutup Shift langsung dari dashboard
+- [x] 4 stat cards: Order Hari Ini, Selesai, Aktif, Revenue Shift — semua dengan Motion.js counter
+- [x] Quick link: CTA "Buka POS" (amber) + "Order Masuk"
+- [x] Commit: part of sprint 12
 
 ### Task 12.4 — Dashboard Staff (Vue)
-- [ ] Update `StaffDashboardController::index()`: jumlah antrian saat ini, selesai hari ini
-- [ ] Update `resources/js/Pages/Staff/Dashboard.vue`
-  - Stat: antrian aktif, order selesai hari ini
-  - Shortcut ke halaman Queue
-  - Animasi counter dengan Motion.js
-- [ ] Commit: `feat: staff dashboard`
+- [x] 2 stat cards besar: Antrian Aktif (amber, extra large) + Selesai Hari Ini (green) — Motion.js counter
+- [x] CTA amber besar: "Buka Antrian Dapur" dengan shortcut ke staff.queue
+- [x] Commit: `feat: sprint 12 - real-data dashboards with motion.js animations and svg chart`
 
 ---
 
