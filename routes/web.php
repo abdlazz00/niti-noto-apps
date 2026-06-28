@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Cashier\ExpenseController as CashierExpenseController;
 use App\Http\Controllers\Cashier\OrderController as CashierOrderController;
 use App\Http\Controllers\Cashier\PosController;
 use App\Http\Controllers\Cashier\ShiftController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\Customer\OrderController as CustomerOrderController;
 use App\Http\Controllers\Customer\TrackController;
 use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\Owner\CategoryController;
+use App\Http\Controllers\Owner\ExpenseCategoryController;
+use App\Http\Controllers\Owner\ExpenseController as OwnerExpenseController;
 use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\StaffController;
 use App\Http\Controllers\Owner\TableController;
@@ -39,6 +42,16 @@ Route::middleware(['auth', 'role:owner'])->prefix('owner')->name('owner.')->grou
     Route::get('/dashboard', fn () => Inertia::render('Owner/Dashboard'))->name('dashboard');
     Route::resource('staff', StaffController::class);
     Route::patch('staff/{staff}/toggle-active', [StaffController::class, 'toggleActive'])->name('staff.toggle-active');
+
+    // Expense management
+    Route::get('/expenses', [OwnerExpenseController::class, 'index'])->name('expenses');
+    Route::patch('/expenses/{expense}/approve', [OwnerExpenseController::class, 'approve'])->name('expenses.approve');
+    Route::patch('/expenses/{expense}/reject', [OwnerExpenseController::class, 'reject'])->name('expenses.reject');
+
+    // Expense categories
+    Route::post('/expense-categories', [ExpenseCategoryController::class, 'store'])->name('expense-categories.store');
+    Route::patch('/expense-categories/{expenseCategory}', [ExpenseCategoryController::class, 'update'])->name('expense-categories.update');
+    Route::delete('/expense-categories/{expenseCategory}', [ExpenseCategoryController::class, 'destroy'])->name('expense-categories.destroy');
 });
 
 // Menu & Table management — accessible by owner and cashier
@@ -70,6 +83,10 @@ Route::middleware(['auth', 'role:cashier'])->prefix('cashier')->name('cashier.')
     Route::get('/orders', [CashierOrderController::class, 'index'])->name('orders');
     Route::patch('/orders/{order}/confirm', [CashierOrderController::class, 'confirm'])->name('orders.confirm');
     Route::patch('/orders/{order}/complete', [CashierOrderController::class, 'complete'])->name('orders.complete');
+
+    // Expense input
+    Route::get('/expenses', [CashierExpenseController::class, 'index'])->name('expenses');
+    Route::post('/expenses', [CashierExpenseController::class, 'store'])->name('expenses.store');
 });
 
 // Staff routes

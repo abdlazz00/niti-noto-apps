@@ -16,4 +16,9 @@ Broadcast::channel('kitchen', function ($user) {
     return $user?->hasRole('staff') ?? false;
 });
 
+// Owner receives expense notifications
+Broadcast::channel('owner', function ($user) {
+    return $user?->hasRole('owner') ?? false;
+});
+
 // Public channels 'order.{id}' and 'orders' need no registration
