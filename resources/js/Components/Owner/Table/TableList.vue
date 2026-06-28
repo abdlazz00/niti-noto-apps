@@ -1,6 +1,4 @@
 <script setup>
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import QRCanvas from '@/Components/Owner/Table/QRCanvas.vue';
@@ -12,78 +10,70 @@ const emit = defineEmits(['toggle', 'delete']);
 </script>
 
 <template>
-    <DataTable
-        :value="tables"
-        :rows="15"
-        paginator
-        :rowsPerPageOptions="[10, 15, 25]"
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-        stripedRows
-        class="text-sm"
-    >
-        <!-- Nomor -->
-        <Column header="No." field="number" sortable style="width: 70px">
-            <template #body="{ data }">
-                <span class="font-bold text-amber-700 text-base">{{ data.number }}</span>
-            </template>
-        </Column>
+    <div v-if="tables.length === 0" class="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm text-slate-400">
+        <i class="pi pi-table text-4xl mb-3 block text-slate-300" />
+        <p class="font-medium text-sm">Belum ada meja terdaftar</p>
+    </div>
 
-        <!-- Nama -->
-        <Column header="Nama Meja" field="name" sortable>
-            <template #body="{ data }">
-                <span class="font-medium text-slate-800">{{ data.name }}</span>
-            </template>
-        </Column>
-
-        <!-- QR Preview -->
-        <Column header="QR Code" style="width: 90px">
-            <template #body="{ data }">
-                <QRCanvas :url="data.qr_url" :size="60" />
-            </template>
-        </Column>
-
-        <!-- Status -->
-        <Column header="Status" style="width: 100px">
-            <template #body="{ data }">
-                <Tag
-                    :value="data.is_active ? 'Aktif' : 'Nonaktif'"
-                    :severity="data.is_active ? 'success' : 'secondary'"
-                />
-            </template>
-        </Column>
-
-        <!-- Aksi -->
-        <Column header="Aksi" style="width: 160px">
-            <template #body="{ data }">
-                <div class="flex items-center gap-1">
-                    <Link :href="route('owner.tables.qr', data.id)">
-                        <Button icon="pi pi-qrcode" size="small" text rounded severity="secondary" v-tooltip="'Print QR'" />
+    <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div
+            v-for="table in tables"
+            :key="table.id"
+            class="bg-white rounded-2xl border border-slate-150 shadow-sm hover:shadow-md hover:border-amber-300 transition-all p-5 flex flex-col items-center text-center relative overflow-hidden"
+        >
+            <!-- QR code container (Click to see large or print) -->
+            <div class="mb-4 p-3 bg-slate-50 rounded-xl border border-slate-100/50 flex items-center justify-center relative group">
+                <QRCanvas :url="table.qr_url" :size="120" />
+                <div class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center">
+                    <Link :href="route('owner.tables.qr', table.id)" target="_blank">
+                        <Button icon="pi pi-print" severity="warn" size="small" rounded v-tooltip.top="'Cetak QR Meja'" />
                     </Link>
-                    <Link :href="route('owner.tables.edit', data.id)">
-                        <Button icon="pi pi-pencil" size="small" text rounded severity="info" v-tooltip="'Edit'" />
-                    </Link>
-                    <Button
-                        :icon="data.is_active ? 'pi pi-eye-slash' : 'pi pi-eye'"
-                        size="small" text rounded
-                        :severity="data.is_active ? 'warn' : 'success'"
-                        v-tooltip="data.is_active ? 'Nonaktifkan' : 'Aktifkan'"
-                        @click="emit('toggle', data)"
-                    />
-                    <Button
-                        icon="pi pi-trash"
-                        size="small" text rounded severity="danger"
-                        v-tooltip="'Hapus'"
-                        @click="emit('delete', data)"
+                </div>
+            </div>
+
+            <!-- Table Info -->
+            <div class="space-y-1.5 mb-5 w-full">
+                <div class="flex items-center justify-center gap-2">
+                    <span class="text-xs font-bold px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-100 rounded-full">
+                        Meja {{ table.number }}
+                    </span>
+                    <Tag
+                        :value="table.is_active ? 'Aktif' : 'Nonaktif'"
+                        :severity="table.is_active ? 'success' : 'secondary'"
+                        class="text-[10px] uppercase font-bold"
                     />
                 </div>
-            </template>
-        </Column>
-
-        <template #empty>
-            <div class="text-center py-10 text-slate-400">
-                <i class="pi pi-table text-3xl mb-2 block" />
-                <p>Belum ada meja terdaftar</p>
+                <h3 class="text-base font-bold text-slate-800 truncate px-2" :title="table.name">
+                    {{ table.name }}
+                </h3>
             </div>
-        </template>
-    </DataTable>
+
+            <!-- Action Buttons Grid -->
+            <div class="mt-auto w-full pt-4 border-t border-slate-100/70 flex items-center justify-between gap-2">
+                <div class="flex gap-1.5">
+                    <Link :href="route('owner.tables.edit', table.id)">
+                        <Button icon="pi pi-pencil" size="small" outlined severity="info" class="p-2 rounded-lg" v-tooltip.top="'Edit'" />
+                    </Link>
+                    <Button
+                        icon="pi pi-trash"
+                        size="small"
+                        outlined
+                        severity="danger"
+                        class="p-2 rounded-lg"
+                        v-tooltip.top="'Hapus'"
+                        @click="emit('delete', table)"
+                    />
+                </div>
+                
+                <Button
+                    :icon="table.is_active ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                    :label="table.is_active ? 'Nonaktif' : 'Aktifkan'"
+                    size="small"
+                    :severity="table.is_active ? 'warn' : 'success'"
+                    class="text-xs font-bold py-1.5 px-3 rounded-lg"
+                    @click="emit('toggle', table)"
+                />
+            </div>
+        </div>
+    </div>
 </template>

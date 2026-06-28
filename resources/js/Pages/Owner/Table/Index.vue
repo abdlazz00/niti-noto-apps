@@ -72,7 +72,7 @@ function onDelete(table) {
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div>
             <TableList :tables="tables" @toggle="onToggle" @delete="onDelete" />
         </div>
     </div>

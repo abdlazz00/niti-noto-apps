@@ -75,7 +75,7 @@ function submit() {
 
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <Link :href="route('owner.tables.index')">
-                    <Button type="button" label="Batal" outlined severity="secondary" />
+                    <Button type="button" label="Batal" icon="pi pi-times" outlined severity="secondary" />
                 </Link>
                 <Button type="submit" label="Simpan Meja" icon="pi pi-check" severity="warn" :loading="form.processing" />
             </div>
